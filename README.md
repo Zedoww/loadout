@@ -1,4 +1,4 @@
-# Opti — Optimisation PC Gaming
+# Loadout — Optimisation PC Gaming
 
 Application desktop Windows pour optimiser ton PC pour le jeu, avec un principe non négociable : **tout est sûr et réversible**.
 
@@ -12,10 +12,10 @@ Application desktop Windows pour optimiser ton PC pour le jeu, avec un principe 
 ## Structure
 
 ```
-Opti.sln
+Loadout.sln
 └─ src/
-   ├─ Opti.Core/   Logique système (monitoring, optimisations, backups)
-   └─ Opti.App/    Interface WPF Fluent
+   ├─ Loadout.Core/   Logique système (monitoring, optimisations, backups)
+   └─ Loadout.App/    Interface WPF Fluent
 ```
 
 ## Fonctionnalités (MVP)
@@ -23,10 +23,10 @@ Opti.sln
 | Page           | Ce que ça fait                                                              | Réversible |
 |----------------|----------------------------------------------------------------------------|------------|
 | Tableau de bord | Charge et température CPU/GPU, utilisation RAM en temps réel               | —          |
-| Mode jeu        | Plan d'alimentation hautes performances + libération de la RAM            | ✅ snapshot |
+| Surge           | Plan d'alimentation hautes performances + libération de la RAM            | ✅ snapshot |
 | Nettoyage       | Suppression des fichiers temporaires + création d'un point de restauration | ✅          |
 
-Le mode jeu sauvegarde l'état précédent dans `%APPDATA%\Opti\boost-state.json` :
+**Surge** sauvegarde l'état précédent dans `%APPDATA%\Loadout\surge-state.json` :
 le bouton « Désactiver et restaurer » rétablit le plan d'alimentation d'origine.
 
 ## Lancer
@@ -39,7 +39,7 @@ capteurs matériels, point de restauration).
 dotnet build
 
 # Lancer (accepter l'invite UAC)
-.\src\Opti.App\bin\Debug\net9.0-windows\Opti.exe
+.\src\Loadout.App\bin\Debug\net9.0-windows\Loadout.exe
 ```
 
 ## Roadmap

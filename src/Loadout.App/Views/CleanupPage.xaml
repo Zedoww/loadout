@@ -1,0 +1,54 @@
+<Page x:Class="Loadout.App.Views.CleanupPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="Nettoyage">
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Nettoyage" FontSize="28" FontWeight="Bold" />
+            <TextBlock Text="Supprime les fichiers temporaires. Les fichiers en cours d'utilisation sont ignorés."
+                       Opacity="0.7" Margin="0,4,0,0" TextWrapping="Wrap" />
+        </StackPanel>
+
+        <ui:Card Grid.Row="1" Padding="24" Margin="0,0,0,16">
+            <StackPanel>
+                <TextBlock Text="{Binding ScanSummary}" FontSize="15" TextWrapping="Wrap" Margin="0,0,0,16" />
+                <StackPanel Orientation="Horizontal">
+                    <ui:Button Content="Analyser" Icon="{ui:SymbolIcon Search24}"
+                               Command="{Binding ScanCommand}"
+                               IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBool}}"
+                               Margin="0,0,12,0" />
+                    <ui:Button Content="Nettoyer" Icon="{ui:SymbolIcon Broom24}"
+                               Appearance="Primary"
+                               IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBool}}"
+                               Command="{Binding CleanCommand}" Margin="0,0,12,0" />
+                    <ui:Button Content="Point de restauration" Icon="{ui:SymbolIcon ShieldCheckmark24}"
+                               IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBool}}"
+                               Command="{Binding CreateRestorePointCommand}" />
+                </StackPanel>
+                <ui:ProgressRing IsIndeterminate="True"
+                                 Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}"
+                                 Margin="0,16,0,0" HorizontalAlignment="Left" />
+            </StackPanel>
+        </ui:Card>
+
+        <ui:Card Grid.Row="2" Padding="16">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding Log}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" Margin="0,3" FontFamily="Cascadia Mono, Consolas" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </ui:Card>
+    </Grid>
+</Page>
