@@ -1,0 +1,21 @@
+# Build
+bin/
+obj/
+[Bb]uild/
+[Oo]ut/
+artifacts/
+
+# IDE
+.vs/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Test
+[Tt]est[Rr]esult*/
+
+# OS
+Thumbs.db
+.DS_Store

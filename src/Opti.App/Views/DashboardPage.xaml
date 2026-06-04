@@ -1,0 +1,98 @@
+<Page x:Class="Opti.App.Views.DashboardPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="Tableau de bord">
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Tableau de bord" FontSize="28" FontWeight="Bold" />
+            <TextBlock Text="Surveillance en temps réel de ton matériel"
+                       Opacity="0.7" Margin="0,4,0,0" />
+        </StackPanel>
+
+        <UniformGrid Grid.Row="1" Columns="1" Rows="3" VerticalAlignment="Top">
+
+            <!-- CPU -->
+            <ui:Card Margin="0,0,0,16" Padding="20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon Symbol="DeveloperBoard24" Margin="0,0,8,0" />
+                            <TextBlock Text="Processeur" FontSize="18" FontWeight="SemiBold" />
+                        </StackPanel>
+                        <TextBlock Text="{Binding CpuName}" Opacity="0.7" Margin="0,2,0,10" />
+                        <ProgressBar Maximum="100"
+                                     Value="{Binding CpuLoad, FallbackValue=0, TargetNullValue=0}"
+                                     Height="8" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0,0,0">
+                        <TextBlock HorizontalAlignment="Right" FontSize="26" FontWeight="Bold"
+                                   Text="{Binding CpuLoad, Converter={StaticResource NullableFloat}, ConverterParameter=' %'}" />
+                        <TextBlock HorizontalAlignment="Right" Opacity="0.7"
+                                   Text="{Binding CpuTemperature, Converter={StaticResource NullableFloat}, ConverterParameter=' °C'}" />
+                    </StackPanel>
+                </Grid>
+            </ui:Card>
+
+            <!-- GPU -->
+            <ui:Card Margin="0,0,0,16" Padding="20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon Symbol="Games24" Margin="0,0,8,0" />
+                            <TextBlock Text="Carte graphique" FontSize="18" FontWeight="SemiBold" />
+                        </StackPanel>
+                        <TextBlock Text="{Binding GpuName}" Opacity="0.7" Margin="0,2,0,10" />
+                        <ProgressBar Maximum="100"
+                                     Value="{Binding GpuLoad, FallbackValue=0, TargetNullValue=0}"
+                                     Height="8" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0,0,0">
+                        <TextBlock HorizontalAlignment="Right" FontSize="26" FontWeight="Bold"
+                                   Text="{Binding GpuLoad, Converter={StaticResource NullableFloat}, ConverterParameter=' %'}" />
+                        <TextBlock HorizontalAlignment="Right" Opacity="0.7"
+                                   Text="{Binding GpuTemperature, Converter={StaticResource NullableFloat}, ConverterParameter=' °C'}" />
+                    </StackPanel>
+                </Grid>
+            </ui:Card>
+
+            <!-- RAM -->
+            <ui:Card Margin="0,0,0,16" Padding="20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon Symbol="Ram20" Margin="0,0,8,0" />
+                            <TextBlock Text="Mémoire vive" FontSize="18" FontWeight="SemiBold" />
+                        </StackPanel>
+                        <TextBlock Text="{Binding MemorySummary}" Opacity="0.7" Margin="0,2,0,10" />
+                        <ProgressBar Maximum="100"
+                                     Value="{Binding MemoryLoad, FallbackValue=0, TargetNullValue=0}"
+                                     Height="8" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0,0,0">
+                        <TextBlock HorizontalAlignment="Right" FontSize="26" FontWeight="Bold"
+                                   Text="{Binding MemoryLoad, Converter={StaticResource NullableFloat}, ConverterParameter=' %'}" />
+                    </StackPanel>
+                </Grid>
+            </ui:Card>
+        </UniformGrid>
+    </Grid>
+</Page>
