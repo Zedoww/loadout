@@ -1,28 +1,28 @@
 ## Description
 
-<!-- Que fait cette PR ? -->
+<!-- What does this PR do? -->
 
-## Type de changement
+## Type of change
 
-- [ ] 🐛 Correction de bug
-- [ ] ✨ Nouvelle fonctionnalité
+- [ ] 🐛 Bug fix
+- [ ] ✨ New feature
 - [ ] 📝 Documentation
 - [ ] ♻️ Refactoring
 - [ ] ✅ Tests
 
-## Réversibilité (obligatoire si le système est modifié)
+## Reversibility (required if the system is modified)
 
-- [ ] Cette PR **ne modifie pas** l'état du système, OU
-- [ ] L'état d'origine est **sauvegardé** avant modification
-- [ ] Une **restauration** fiable est fournie et testée
+- [ ] This PR **does not modify** system state, OR
+- [ ] The original state is **backed up** before modification
+- [ ] A reliable **restore** is provided and tested
 
-Décris ce qui est modifié sur le système et comment c'est restauré :
+Describe what changes on the system and how it is restored:
 
 <!-- ... -->
 
 ## Checklist
 
-- [ ] `dotnet build` passe sans erreur ni avertissement
-- [ ] `dotnet test` passe
-- [ ] La logique testable est dans `Loadout.Core` et couverte par des tests
-- [ ] Le style respecte le `.editorconfig`
+- [ ] `dotnet build` passes with no errors or warnings
+- [ ] `dotnet test` passes
+- [ ] Testable logic lives in `Loadout.Core` and is covered by tests
+- [ ] The style follows `.editorconfig`

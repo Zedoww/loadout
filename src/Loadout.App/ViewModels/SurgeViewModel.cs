@@ -44,7 +44,7 @@ public partial class SurgeViewModel : ObservableObject
         {
             string line = (r.Success ? "✓ " : "✗ ") + r.Message;
             if (r.BytesFreed > 0)
-                line += $" ({BytesToReadableConverter.Format(r.BytesFreed)} libérés)";
+                line += $" ({BytesToReadableConverter.Format(r.BytesFreed)} freed)";
             Log.Add(line);
         }
 

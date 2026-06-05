@@ -1,32 +1,32 @@
-# Contribuer à Loadout
+# Contributing to Loadout
 
-Merci de l'intérêt que tu portes au projet ! Loadout vise à devenir une
-référence open source d'optimisation PC pour le gaming. Toute contribution est
-la bienvenue : code, documentation, tests, idées, signalements de bugs.
+Thanks for your interest in the project! Loadout aims to become an open source
+reference for gaming PC optimization. Every contribution is welcome: code,
+documentation, tests, ideas, bug reports.
 
-## Le principe non négociable : sûr et réversible
+## The non-negotiable principle: safe and reversible
 
-Loadout repose sur une règle absolue :
+Loadout rests on one absolute rule:
 
-> **Toute optimisation doit être sûre et entièrement réversible.**
+> **Every optimization must be safe and fully reversible.**
 
-Concrètement, toute fonctionnalité qui modifie l'état du système doit :
+Concretely, any feature that changes system state must:
 
-1. **Sauvegarder l'état d'origine** avant toute modification.
-2. **Proposer une restauration** fiable de cet état.
-3. Privilégier les actions réversibles (suspendre un processus plutôt que le
-   tuer, désactiver un service plutôt que le supprimer, etc.).
+1. **Back up the original state** before any modification.
+2. **Offer a reliable restore** of that state.
+3. Favor reversible actions (suspend a process rather than kill it, disable a
+   service rather than delete it, etc.).
 
-Une PR qui introduit une modification système irréversible sans backup sera
-refusée, quelle que soit sa qualité technique.
+A PR that introduces an irreversible system change with no backup will be
+rejected, regardless of its technical quality.
 
-## Prérequis
+## Prerequisites
 
-- [.NET SDK 9](https://dotnet.microsoft.com/download) ou supérieur
-- Windows 10/11 (l'application cible Windows)
-- Un éditeur : Visual Studio 2022, Rider ou VS Code
+- [.NET SDK 9](https://dotnet.microsoft.com/download) or newer
+- Windows 10/11 (the app targets Windows)
+- An editor: Visual Studio 2022, Rider, or VS Code
 
-## Démarrer
+## Getting started
 
 ```bash
 git clone https://github.com/Zedoww/loadout.git
@@ -36,42 +36,43 @@ dotnet test
 dotnet run --project src/Loadout.App
 ```
 
-> L'application requiert les droits administrateur (capteurs matériels, plan
-> d'alimentation, registre). Lance-la depuis un terminal élevé en dev.
+> The app requires administrator rights (hardware sensors, power plan,
+> registry). Launch it from an elevated terminal during development.
 
 ## Structure
 
 ```
 src/
-├─ Loadout.Core/        Logique système, sans dépendance à l'UI (testable)
-├─ Loadout.App/         Interface WPF (Fluent), MVVM
-└─ Loadout.Core.Tests/  Tests unitaires du cœur
+├─ Loadout.Core/        System logic, no UI dependency (testable)
+├─ Loadout.App/         WPF (Fluent) UI, MVVM
+└─ Loadout.Core.Tests/  Core unit tests
 ```
 
-La règle d'or d'architecture : **toute la logique testable vit dans
-`Loadout.Core`**, l'UI ne fait qu'orchestrer.
+The golden architecture rule: **all testable logic lives in `Loadout.Core`**;
+the UI only orchestrates.
 
-## Workflow de contribution
+## Contribution workflow
 
-1. Crée une branche : `git checkout -b feat/ma-fonctionnalite`
-2. Code, en respectant le `.editorconfig` et le style existant.
-3. Ajoute des tests pour toute logique dans `Loadout.Core`.
-4. Vérifie que tout passe : `dotnet build` puis `dotnet test`.
-5. Ouvre une Pull Request en décrivant **ce qui est modifié sur le système et
-   comment c'est restauré**.
+1. Create a branch: `git checkout -b feat/my-feature`
+2. Code, following `.editorconfig` and the existing style.
+3. Add tests for any logic in `Loadout.Core`.
+4. Make sure everything passes: `dotnet build` then `dotnet test`.
+5. Open a Pull Request describing **what changes on the system and how it is
+   restored**.
 
-## Style de commits
+## Commit style
 
-Format [Conventional Commits](https://www.conventionalcommits.org/) recommandé :
+[Conventional Commits](https://www.conventionalcommits.org/) format is
+recommended:
 
 ```
-feat: ajout de la suspension des processus pendant Surge
-fix: correction de la lecture de température GPU AMD
-docs: mise à jour du README
-test: couverture du parsing des plans d'alimentation
+feat: add process suspension during Surge
+fix: correct AMD GPU temperature reading
+docs: update the README
+test: cover power plan parsing
 ```
 
-## Signaler un bug ou proposer une idée
+## Report a bug or suggest an idea
 
-Ouvre une [issue](https://github.com/Zedoww/loadout/issues) en utilisant le
-template approprié.
+Open an [issue](https://github.com/Zedoww/loadout/issues) using the appropriate
+template.

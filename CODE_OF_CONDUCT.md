@@ -1,37 +1,36 @@
-# Code de conduite
+# Code of Conduct
 
-## Notre engagement
+## Our pledge
 
-Dans l'intérêt de favoriser un environnement ouvert et accueillant, nous nous
-engageons, en tant que contributeurs et mainteneurs, à faire de la participation
-à ce projet une expérience exempte de harcèlement pour tout le monde, sans
-distinction d'âge, de morphologie, de handicap, d'origine ethnique, d'identité
-ou d'expression de genre, de niveau d'expérience, de nationalité, d'apparence,
-de race, de religion ou d'orientation sexuelle.
+In the interest of fostering an open and welcoming environment, we as
+contributors and maintainers pledge to make participation in this project a
+harassment-free experience for everyone, regardless of age, body size,
+disability, ethnicity, gender identity or expression, level of experience,
+nationality, personal appearance, race, religion, or sexual orientation.
 
-## Nos critères
+## Our standards
 
-Exemples de comportements qui contribuent à un environnement positif :
+Examples of behavior that contributes to a positive environment:
 
-- Faire preuve d'empathie et de bienveillance.
-- Respecter les opinions, points de vue et expériences divergents.
-- Donner et accepter avec grâce les critiques constructives.
-- Se concentrer sur ce qui est le mieux pour la communauté.
+- Showing empathy and kindness.
+- Respecting differing opinions, viewpoints, and experiences.
+- Giving and gracefully accepting constructive criticism.
+- Focusing on what is best for the community.
 
-Exemples de comportements inacceptables :
+Examples of unacceptable behavior:
 
-- L'usage de langage ou d'imagerie sexualisés.
-- Les attaques personnelles ou politiques (trolling).
-- Le harcèlement public ou privé.
-- La publication d'informations privées d'autrui sans permission.
+- The use of sexualized language or imagery.
+- Personal or political attacks (trolling).
+- Public or private harassment.
+- Publishing others' private information without permission.
 
-## Application
+## Enforcement
 
-Les cas de comportement abusif peuvent être signalés au mainteneur du projet.
-Toutes les plaintes seront examinées et donneront lieu à une réponse jugée
-nécessaire et adaptée aux circonstances.
+Instances of abusive behavior may be reported to the project maintainer. All
+complaints will be reviewed and investigated and will result in a response that
+is deemed necessary and appropriate to the circumstances.
 
 ## Attribution
 
-Ce code de conduite est adapté du
+This Code of Conduct is adapted from the
 [Contributor Covenant](https://www.contributor-covenant.org), version 2.1.
