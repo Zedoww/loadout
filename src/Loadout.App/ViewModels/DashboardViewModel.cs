@@ -59,7 +59,7 @@ public partial class DashboardViewModel : ObservableObject, IDisposable
 
         MemoryLoad = m.MemoryLoad;
         MemorySummary = m is { MemoryUsedGb: not null, MemoryTotalGb: not null }
-            ? $"{m.MemoryUsedGb:0.0} / {m.MemoryTotalGb:0.0} Go"
+            ? $"{m.MemoryUsedGb:0.0} / {m.MemoryTotalGb:0.0} GB"
             : "—";
     }
 

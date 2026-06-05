@@ -2,6 +2,7 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:b="clr-namespace:Loadout.App.Behaviors"
       Title="Dashboard">
 
     <Page.Resources>
@@ -14,124 +15,126 @@
         </Style>
     </Page.Resources>
 
-    <Grid Margin="28,24,28,28">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  MaxHeight="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type Page}}}">
+        <Grid Margin="28,24,28,28">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Margin="0,0,0,24">
-            <TextBlock Text="Dashboard" Style="{StaticResource Type.PageTitle}" />
-            <TextBlock Text="Live hardware telemetry — processor, graphics and memory."
-                       Style="{StaticResource Type.PageSubtitle}" Margin="0,4,0,0" />
-        </StackPanel>
-
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-
-            <!-- CPU -->
-            <ui:Card Grid.Column="0" Margin="0,0,8,0">
-                <StackPanel>
-                    <DockPanel>
-                        <Border Width="34" Height="34" CornerRadius="9" Background="#1E2440" DockPanel.Dock="Left">
-                            <ui:SymbolIcon Symbol="DeveloperBoard24" FontSize="18"
-                                           Foreground="{StaticResource Brand.Primary}" />
-                        </Border>
-                        <Border Style="{StaticResource Pill}" Background="#161B27"
-                                DockPanel.Dock="Right" HorizontalAlignment="Right">
-                            <TextBlock Style="{StaticResource Type.MetricUnit}"
-                                       Text="{Binding CpuTemperature, Converter={StaticResource NullableFloat}, ConverterParameter=' °C'}" />
-                        </Border>
-                        <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="CPU" Style="{StaticResource Type.Caption}" />
-                            <TextBlock Text="{Binding CpuName}" Style="{StaticResource Type.Body}"
-                                       TextTrimming="CharacterEllipsis" MaxWidth="150" />
-                        </StackPanel>
-                    </DockPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,18,0,10">
-                        <TextBlock Style="{StaticResource Type.Metric}"
-                                   Text="{Binding CpuLoad, Converter={StaticResource NullableFloat}, ConverterParameter=''}" />
-                        <TextBlock Text="%" Style="{StaticResource Type.MetricUnit}"
-                                   VerticalAlignment="Bottom" Margin="3,0,0,5" />
-                    </StackPanel>
-
-                    <ProgressBar Style="{StaticResource MetricBar}"
-                                 Value="{Binding CpuLoad, FallbackValue=0, TargetNullValue=0}" />
-                </StackPanel>
-            </ui:Card>
-
-            <!-- GPU -->
-            <ui:Card Grid.Column="1" Margin="8,0,8,0">
-                <StackPanel>
-                    <DockPanel>
-                        <Border Width="34" Height="34" CornerRadius="9" Background="#1E2440" DockPanel.Dock="Left">
-                            <ui:SymbolIcon Symbol="Games24" FontSize="18"
-                                           Foreground="{StaticResource Brand.Primary}" />
-                        </Border>
-                        <Border Style="{StaticResource Pill}" Background="#161B27"
-                                DockPanel.Dock="Right" HorizontalAlignment="Right">
-                            <TextBlock Style="{StaticResource Type.MetricUnit}"
-                                       Text="{Binding GpuTemperature, Converter={StaticResource NullableFloat}, ConverterParameter=' °C'}" />
-                        </Border>
-                        <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="GPU" Style="{StaticResource Type.Caption}" />
-                            <TextBlock Text="{Binding GpuName}" Style="{StaticResource Type.Body}"
-                                       TextTrimming="CharacterEllipsis" MaxWidth="150" />
-                        </StackPanel>
-                    </DockPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,18,0,10">
-                        <TextBlock Style="{StaticResource Type.Metric}"
-                                   Text="{Binding GpuLoad, Converter={StaticResource NullableFloat}, ConverterParameter=''}" />
-                        <TextBlock Text="%" Style="{StaticResource Type.MetricUnit}"
-                                   VerticalAlignment="Bottom" Margin="3,0,0,5" />
-                    </StackPanel>
-
-                    <ProgressBar Style="{StaticResource MetricBar}"
-                                 Value="{Binding GpuLoad, FallbackValue=0, TargetNullValue=0}" />
-                </StackPanel>
-            </ui:Card>
-
-            <!-- RAM -->
-            <ui:Card Grid.Column="2" Margin="8,0,0,0">
-                <StackPanel>
-                    <DockPanel>
-                        <Border Width="34" Height="34" CornerRadius="9" Background="#1E2440" DockPanel.Dock="Left">
-                            <ui:SymbolIcon Symbol="Ram20" FontSize="18"
-                                           Foreground="{StaticResource Brand.Primary}" />
-                        </Border>
-                        <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="MEMORY" Style="{StaticResource Type.Caption}" />
-                            <TextBlock Text="{Binding MemorySummary}" Style="{StaticResource Type.Body}" />
-                        </StackPanel>
-                    </DockPanel>
-
-                    <StackPanel Orientation="Horizontal" Margin="0,18,0,10">
-                        <TextBlock Style="{StaticResource Type.Metric}"
-                                   Text="{Binding MemoryLoad, Converter={StaticResource NullableFloat}, ConverterParameter=''}" />
-                        <TextBlock Text="%" Style="{StaticResource Type.MetricUnit}"
-                                   VerticalAlignment="Bottom" Margin="3,0,0,5" />
-                    </StackPanel>
-
-                    <ProgressBar Style="{StaticResource MetricBar}"
-                                 Value="{Binding MemoryLoad, FallbackValue=0, TargetNullValue=0}" />
-                </StackPanel>
-            </ui:Card>
-        </Grid>
-
-        <Border Grid.Row="2" Style="{StaticResource Surface}" Padding="18,14" Margin="0,16,0,0"
-                VerticalAlignment="Top">
-            <StackPanel Orientation="Horizontal">
-                <ui:SymbolIcon Symbol="Info24" Foreground="{StaticResource Text.Tertiary}" />
-                <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" Style="{StaticResource Type.Body}"
-                           Text="Sensors refresh once per second. The discrete GPU is auto-detected over integrated graphics." />
+            <StackPanel Grid.Row="0" Margin="0,0,0,24">
+                <TextBlock Text="Dashboard" Style="{StaticResource Type.PageTitle}" />
+                <TextBlock Text="Live hardware telemetry — processor, graphics and memory."
+                           Style="{StaticResource Type.PageSubtitle}" Margin="0,4,0,0" />
             </StackPanel>
-        </Border>
-    </Grid>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- CPU -->
+                <ui:Card Grid.Column="0" Margin="0,0,8,0">
+                    <StackPanel>
+                        <DockPanel>
+                            <Border Width="34" Height="34" CornerRadius="9" Background="#1E2440" DockPanel.Dock="Left">
+                                <ui:SymbolIcon Symbol="DeveloperBoard24" FontSize="18"
+                                               Foreground="{StaticResource Brand.Primary}" />
+                            </Border>
+                            <Border Style="{StaticResource Pill}" Background="#161B27"
+                                    DockPanel.Dock="Right" HorizontalAlignment="Right">
+                                <TextBlock Style="{StaticResource Type.MetricUnit}"
+                                           Text="{Binding CpuTemperature, Converter={StaticResource NullableFloat}, ConverterParameter=' °C'}" />
+                            </Border>
+                            <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="CPU" Style="{StaticResource Type.Caption}" />
+                                <TextBlock Text="{Binding CpuName}" Style="{StaticResource Type.Body}"
+                                           TextTrimming="CharacterEllipsis" MaxWidth="150" />
+                            </StackPanel>
+                        </DockPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,18,0,10">
+                            <TextBlock Style="{StaticResource Type.Metric}"
+                                       Text="{Binding CpuLoad, Converter={StaticResource NullableFloat}, ConverterParameter=''}" />
+                            <TextBlock Text="%" Style="{StaticResource Type.MetricUnit}"
+                                       VerticalAlignment="Bottom" Margin="3,0,0,5" />
+                        </StackPanel>
+
+                        <ProgressBar Style="{StaticResource MetricBar}"
+                                     b:SmoothProgress.TargetValue="{Binding CpuLoad, FallbackValue=0, TargetNullValue=0}" />
+                    </StackPanel>
+                </ui:Card>
+
+                <!-- GPU -->
+                <ui:Card Grid.Column="1" Margin="8,0,8,0">
+                    <StackPanel>
+                        <DockPanel>
+                            <Border Width="34" Height="34" CornerRadius="9" Background="#1E2440" DockPanel.Dock="Left">
+                                <ui:SymbolIcon Symbol="Games24" FontSize="18"
+                                               Foreground="{StaticResource Brand.Primary}" />
+                            </Border>
+                            <Border Style="{StaticResource Pill}" Background="#161B27"
+                                    DockPanel.Dock="Right" HorizontalAlignment="Right">
+                                <TextBlock Style="{StaticResource Type.MetricUnit}"
+                                           Text="{Binding GpuTemperature, Converter={StaticResource NullableFloat}, ConverterParameter=' °C'}" />
+                            </Border>
+                            <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="GPU" Style="{StaticResource Type.Caption}" />
+                                <TextBlock Text="{Binding GpuName}" Style="{StaticResource Type.Body}"
+                                           TextTrimming="CharacterEllipsis" MaxWidth="150" />
+                            </StackPanel>
+                        </DockPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,18,0,10">
+                            <TextBlock Style="{StaticResource Type.Metric}"
+                                       Text="{Binding GpuLoad, Converter={StaticResource NullableFloat}, ConverterParameter=''}" />
+                            <TextBlock Text="%" Style="{StaticResource Type.MetricUnit}"
+                                       VerticalAlignment="Bottom" Margin="3,0,0,5" />
+                        </StackPanel>
+
+                        <ProgressBar Style="{StaticResource MetricBar}"
+                                     b:SmoothProgress.TargetValue="{Binding GpuLoad, FallbackValue=0, TargetNullValue=0}" />
+                    </StackPanel>
+                </ui:Card>
+
+                <!-- RAM -->
+                <ui:Card Grid.Column="2" Margin="8,0,0,0">
+                    <StackPanel>
+                        <DockPanel>
+                            <Border Width="34" Height="34" CornerRadius="9" Background="#1E2440" DockPanel.Dock="Left">
+                                <ui:SymbolIcon Symbol="Ram20" FontSize="18"
+                                               Foreground="{StaticResource Brand.Primary}" />
+                            </Border>
+                            <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="MEMORY" Style="{StaticResource Type.Caption}" />
+                                <TextBlock Text="{Binding MemorySummary}" Style="{StaticResource Type.Body}" />
+                            </StackPanel>
+                        </DockPanel>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,18,0,10">
+                            <TextBlock Style="{StaticResource Type.Metric}"
+                                       Text="{Binding MemoryLoad, Converter={StaticResource NullableFloat}, ConverterParameter=''}" />
+                            <TextBlock Text="%" Style="{StaticResource Type.MetricUnit}"
+                                       VerticalAlignment="Bottom" Margin="3,0,0,5" />
+                        </StackPanel>
+
+                        <ProgressBar Style="{StaticResource MetricBar}"
+                                     b:SmoothProgress.TargetValue="{Binding MemoryLoad, FallbackValue=0, TargetNullValue=0}" />
+                    </StackPanel>
+                </ui:Card>
+            </Grid>
+
+            <Border Grid.Row="2" Style="{StaticResource Surface}" Padding="18,14" Margin="0,16,0,0">
+                <StackPanel Orientation="Horizontal">
+                    <ui:SymbolIcon Symbol="Info24" Foreground="{StaticResource Text.Tertiary}" />
+                    <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" Style="{StaticResource Type.Body}"
+                               Text="Sensors refresh once per second. The discrete GPU is auto-detected over integrated graphics." />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </ScrollViewer>
 </Page>
