@@ -15,20 +15,20 @@ public class ProcessServiceTests
     [InlineData("System", false)]
     [InlineData("lsass", false)]
     [InlineData("Loadout", false)]
-    public void IsSuspendable_protege_les_processus_critiques(string name, bool expected)
+    public void IsSuspendable_protects_critical_processes(string name, bool expected)
     {
         Assert.Equal(expected, CreateSut().IsSuspendable(name));
     }
 
     [Fact]
-    public void ListTopByMemory_respecte_la_limite()
+    public void ListTopByMemory_respects_the_limit()
     {
         var list = CreateSut().ListTopByMemory(10);
         Assert.True(list.Count <= 10);
     }
 
     [Fact]
-    public void ListTopByMemory_exclut_les_processus_critiques()
+    public void ListTopByMemory_excludes_critical_processes()
     {
         var sut = CreateSut();
         var list = sut.ListTopByMemory();
@@ -37,7 +37,7 @@ public class ProcessServiceTests
     }
 
     [Fact]
-    public void ListTopByMemory_trie_par_memoire_decroissante()
+    public void ListTopByMemory_sorts_by_descending_memory()
     {
         var list = CreateSut().ListTopByMemory();
 
@@ -46,7 +46,7 @@ public class ProcessServiceTests
     }
 
     [Fact]
-    public void Suspend_refuse_un_processus_critique()
+    public void Suspend_rejects_a_critical_process()
     {
         var result = CreateSut().Suspend("csrss");
         Assert.False(result.Success);

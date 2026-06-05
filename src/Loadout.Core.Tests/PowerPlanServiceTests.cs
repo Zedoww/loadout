@@ -5,59 +5,59 @@ namespace Loadout.Core.Tests;
 public class PowerPlanServiceTests
 {
     private const string ListOutput = """
-        Paramètres d'alimentation existants (* = Actif)
+        Existing Power Schemes (* Active)
         -----------------------------------
 
-        GUID du mode d'alimentation : 381b4222-f694-41f0-9685-ff5bb260df2e  (Utilisation normale) *
-        GUID du mode d'alimentation : 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c  (Performances élevées)
-        GUID du mode d'alimentation : a1841308-3541-4fab-bc81-f71556f20b4a  (Économie d'énergie)
+        Power Scheme GUID: 381b4222-f694-41f0-9685-ff5bb260df2e  (Balanced) *
+        Power Scheme GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c  (High performance)
+        Power Scheme GUID: a1841308-3541-4fab-bc81-f71556f20b4a  (Power saver)
         """;
 
     [Fact]
-    public void ParsePlans_extrait_tous_les_plans()
+    public void ParsePlans_extracts_every_plan()
     {
         var plans = PowerPlanService.ParsePlans(ListOutput);
         Assert.Equal(3, plans.Count);
     }
 
     [Fact]
-    public void ParsePlans_identifie_le_plan_actif()
+    public void ParsePlans_identifies_the_active_plan()
     {
         var plans = PowerPlanService.ParsePlans(ListOutput);
 
         var active = Assert.Single(plans, p => p.IsActive);
         Assert.Equal(PowerPlanService.Balanced, active.Guid);
-        Assert.Equal("Utilisation normale", active.Name);
+        Assert.Equal("Balanced", active.Name);
     }
 
     [Fact]
-    public void ParsePlans_lit_les_guid_et_noms()
+    public void ParsePlans_reads_guids_and_names()
     {
         var plans = PowerPlanService.ParsePlans(ListOutput);
 
         Assert.Contains(plans, p => p.Guid == PowerPlanService.HighPerformance
-                                    && p.Name == "Performances élevées"
+                                    && p.Name == "High performance"
                                     && !p.IsActive);
     }
 
     [Fact]
-    public void ParsePlans_chaine_vide_ne_jette_pas()
+    public void ParsePlans_empty_string_does_not_throw()
     {
         Assert.Empty(PowerPlanService.ParsePlans(string.Empty));
     }
 
     [Fact]
-    public void ParseActivePlan_extrait_le_guid_actif()
+    public void ParseActivePlan_extracts_the_active_guid()
     {
         const string output =
-            "GUID du mode d'alimentation actif : 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c  (Performances élevées)";
+            "Power Scheme GUID: 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c  (High performance)";
 
         Assert.Equal(PowerPlanService.HighPerformance, PowerPlanService.ParseActivePlan(output));
     }
 
     [Fact]
-    public void ParseActivePlan_retourne_null_si_absent()
+    public void ParseActivePlan_returns_null_when_absent()
     {
-        Assert.Null(PowerPlanService.ParseActivePlan("aucun guid ici"));
+        Assert.Null(PowerPlanService.ParseActivePlan("no guid here"));
     }
 }

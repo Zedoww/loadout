@@ -8,28 +8,28 @@ public class TweakServiceTests
     private static TweakService CreateSut() => new(NullLogger<TweakService>.Instance);
 
     [Fact]
-    public void Le_catalogue_n_est_pas_vide()
+    public void The_catalog_is_not_empty()
     {
         Assert.NotEmpty(CreateSut().Definitions);
     }
 
     [Fact]
-    public void Les_identifiants_sont_uniques()
+    public void The_ids_are_unique()
     {
         var ids = CreateSut().Definitions.Select(d => d.Id).ToList();
         Assert.Equal(ids.Count, ids.Distinct().Count());
     }
 
     [Fact]
-    public void Chaque_tweak_a_un_effet_reel()
+    public void Every_tweak_has_a_real_effect()
     {
-        // Valeur activée différente du défaut, sinon le tweak ne sert à rien.
+        // Enabled value differs from the default, otherwise the tweak is pointless.
         Assert.All(CreateSut().Definitions,
             d => Assert.NotEqual(d.EnabledValue, d.DefaultValue));
     }
 
     [Fact]
-    public void Chaque_tweak_est_documente()
+    public void Every_tweak_is_documented()
     {
         Assert.All(CreateSut().Definitions, d =>
         {

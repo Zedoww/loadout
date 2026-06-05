@@ -6,7 +6,7 @@ namespace Loadout.Core.Tests;
 public class SurgeStateTests
 {
     [Fact]
-    public void SurgeState_survit_a_un_aller_retour_json()
+    public void SurgeState_survives_a_json_round_trip()
     {
         var original = new SurgeState
         {
@@ -23,7 +23,7 @@ public class SurgeStateTests
     }
 
     [Fact]
-    public void SurgeState_gere_un_plan_precedent_absent()
+    public void SurgeState_handles_a_missing_previous_plan()
     {
         var original = new SurgeState { PreviousPowerPlan = null };
 

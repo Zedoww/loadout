@@ -23,7 +23,7 @@ public class TempCleanerTests : IDisposable
     }
 
     [Fact]
-    public void Scan_calcule_la_taille_totale()
+    public void Scan_computes_the_total_size()
     {
         long expected = SeedFiles();
         var cleaner = new TempCleaner(new[] { _root });
@@ -32,14 +32,14 @@ public class TempCleanerTests : IDisposable
     }
 
     [Fact]
-    public void Scan_zero_quand_vide()
+    public void Scan_zero_when_empty()
     {
         var cleaner = new TempCleaner(new[] { _root });
         Assert.Equal(0, cleaner.Scan());
     }
 
     [Fact]
-    public void Clean_supprime_les_fichiers_et_renvoie_l_espace_libere()
+    public void Clean_deletes_files_and_returns_freed_space()
     {
         long expected = SeedFiles();
         var cleaner = new TempCleaner(new[] { _root });
@@ -52,7 +52,7 @@ public class TempCleanerTests : IDisposable
     }
 
     [Fact]
-    public void Clean_ignore_un_dossier_inexistant()
+    public void Clean_ignores_a_missing_directory()
     {
         var cleaner = new TempCleaner(new[] { Path.Combine(_root, "nope") });
         var result = cleaner.Clean();
