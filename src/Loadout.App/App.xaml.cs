@@ -1,46 +1,66 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Threading;
+using Microsoft.Extensions.DependencyInjection;
+using Serilog;
+using Loadout.App.Services;
 
 namespace Loadout.App;
 
 /// <summary>
-/// Interaction logic for App.xaml
+/// Point d'entrée et composition root de l'application.
 /// </summary>
 public partial class App : Application
 {
-    private static readonly string LogPath = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-        "Loadout", "startup.log");
+    /// <summary>Fournisseur de services global (résolution depuis les vues).</summary>
+    public static IServiceProvider Services { get; private set; } = default!;
 
-    public App()
-    {
-        Directory.CreateDirectory(Path.GetDirectoryName(LogPath)!);
-        Log("=== App ctor ===");
-
-        DispatcherUnhandledException += OnDispatcherUnhandledException;
-        AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
-    }
+    private static string LogDirectory => Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Loadout", "logs");
 
     protected override void OnStartup(StartupEventArgs e)
     {
-        Log("OnStartup");
         base.OnStartup(e);
+
+        ConfigureLogging();
+
+        DispatcherUnhandledException += OnDispatcherUnhandledException;
+        AppDomain.CurrentDomain.UnhandledException += (_, args) =>
+            Log.Fatal(args.ExceptionObject as Exception, "Exception non gérée (domaine d'application)");
+
+        var services = new ServiceCollection();
+        services.AddLoadoutServices();
+        Services = services.BuildServiceProvider();
+
+        Log.Information("Loadout démarre.");
+        Services.GetRequiredService<MainWindow>().Show();
+    }
+
+    private static void ConfigureLogging()
+    {
+        Directory.CreateDirectory(LogDirectory);
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.File(
+                Path.Combine(LogDirectory, "loadout-.log"),
+                rollingInterval: RollingInterval.Day,
+                retainedFileCountLimit: 7,
+                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {SourceContext}: {Message:lj}{NewLine}{Exception}")
+            .CreateLogger();
     }
 
     private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
     {
-        Log("DISPATCHER EXCEPTION: " + e.Exception);
-        MessageBox.Show(e.Exception.ToString(), "Loadout — erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+        Log.Error(e.Exception, "Exception non gérée sur le thread d'interface");
+        MessageBox.Show(e.Exception.Message, "Loadout — erreur",
+            MessageBoxButton.OK, MessageBoxImage.Error);
         e.Handled = true;
     }
 
-    private void OnDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
-        => Log("DOMAIN EXCEPTION: " + e.ExceptionObject);
-
-    internal static void Log(string message)
+    protected override void OnExit(ExitEventArgs e)
     {
-        try { File.AppendAllText(LogPath, $"{DateTime.Now:HH:mm:ss.fff}  {message}{Environment.NewLine}"); }
-        catch { /* ignore */ }
+        Log.Information("Loadout s'arrête.");
+        Log.CloseAndFlush();
+        base.OnExit(e);
     }
 }

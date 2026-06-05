@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 
 namespace Loadout.Core.Optimization;
 
@@ -20,14 +21,16 @@ public sealed class SurgeService
 {
     private readonly PowerPlanService _power;
     private readonly MemoryCleaner _memory;
+    private readonly ILogger<SurgeService> _logger;
     private readonly string _statePath;
 
     private static readonly JsonSerializerOptions JsonOpts = new() { WriteIndented = true };
 
-    public SurgeService(PowerPlanService power, MemoryCleaner memory)
+    public SurgeService(PowerPlanService power, MemoryCleaner memory, ILogger<SurgeService> logger)
     {
         _power = power;
         _memory = memory;
+        _logger = logger;
 
         string dir = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Loadout");
@@ -55,6 +58,7 @@ public sealed class SurgeService
         // 1. Capture de l'état avant modification.
         var state = new SurgeState { PreviousPowerPlan = _power.GetActivePlan() };
         File.WriteAllText(_statePath, JsonSerializer.Serialize(state, JsonOpts));
+        _logger.LogInformation("Surge activé. Plan précédent : {Plan}", state.PreviousPowerPlan);
 
         // 2. Plan d'alimentation hautes performances.
         log.Add(_power.ActivateHighPerformance());
@@ -85,6 +89,7 @@ public sealed class SurgeService
         try { File.Delete(_statePath); }
         catch { /* sera réécrit au prochain Apply */ }
 
+        _logger.LogInformation("Surge désactivé, état restauré.");
         log.Add(OptimizationResult.Ok("Surge désactivé, état initial restauré."));
         return log;
     }

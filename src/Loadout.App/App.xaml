@@ -3,8 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:local="clr-namespace:Loadout.App"
-             xmlns:conv="clr-namespace:Loadout.App.Converters"
-             StartupUri="MainWindow.xaml">
+             xmlns:conv="clr-namespace:Loadout.App.Converters">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

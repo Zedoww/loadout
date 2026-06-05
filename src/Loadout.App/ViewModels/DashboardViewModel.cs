@@ -1,7 +1,6 @@
 using System.Timers;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Loadout.App.Services;
 using Loadout.Core.Monitoring;
 using Timer = System.Timers.Timer;
 
@@ -9,6 +8,7 @@ namespace Loadout.App.ViewModels;
 
 public partial class DashboardViewModel : ObservableObject, IDisposable
 {
+    private readonly HardwareMonitor _monitor;
     private readonly Timer _timer;
     private volatile bool _reading;
 
@@ -23,8 +23,9 @@ public partial class DashboardViewModel : ObservableObject, IDisposable
     [ObservableProperty] private float? _memoryLoad;
     [ObservableProperty] private string _memorySummary = "—";
 
-    public DashboardViewModel()
+    public DashboardViewModel(HardwareMonitor monitor)
     {
+        _monitor = monitor;
         _timer = new Timer(1000) { AutoReset = true };
         _timer.Elapsed += OnTick;
         _timer.Start();
@@ -39,7 +40,7 @@ public partial class DashboardViewModel : ObservableObject, IDisposable
         _reading = true;
         try
         {
-            SystemMetrics m = AppServices.Monitor.Read();
+            SystemMetrics m = _monitor.Read();
             Application.Current?.Dispatcher.Invoke(() => Apply(m));
         }
         catch { /* on retentera au prochain tick */ }
