@@ -1,0 +1,60 @@
+<Page x:Class="Loadout.App.Views.TweaksPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="Tweaks">
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Tweaks système" FontSize="28" FontWeight="Bold" />
+            <TextBlock Text="Optimisations registre bien connues. Chaque réglage sauvegarde sa valeur d'origine et peut être restauré à tout moment."
+                       Opacity="0.7" Margin="0,4,0,0" TextWrapping="Wrap" />
+        </StackPanel>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Tweaks}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <ui:Card Margin="0,0,0,12" Padding="18">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Margin="0,0,16,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="15" />
+                                        <Border Margin="10,0,0,0" Padding="6,1"
+                                                CornerRadius="4"
+                                                VerticalAlignment="Center"
+                                                Background="{DynamicResource SystemFillColorCautionBackgroundBrush}"
+                                                Visibility="{Binding RequiresReboot, Converter={StaticResource BoolToVisibility}}">
+                                            <TextBlock Text="Redémarrage requis" FontSize="11"
+                                                       Foreground="{DynamicResource SystemFillColorCautionBrush}" />
+                                        </Border>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Description}" Opacity="0.7"
+                                               Margin="0,4,0,0" TextWrapping="Wrap" />
+                                    <TextBlock Text="{Binding Status}" Opacity="0.6" Margin="0,4,0,0"
+                                               Foreground="{DynamicResource SystemFillColorSuccessBrush}" />
+                                </StackPanel>
+
+                                <ui:Button Grid.Column="1"
+                                           VerticalAlignment="Center"
+                                           MinWidth="120"
+                                           Content="{Binding ButtonText}"
+                                           Command="{Binding ToggleCommand}" />
+                            </Grid>
+                        </ui:Card>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</Page>

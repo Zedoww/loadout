@@ -1,0 +1,52 @@
+<Page x:Class="Loadout.App.Views.SettingsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="Réglages">
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Réglages" FontSize="28" FontWeight="Bold" />
+        </StackPanel>
+
+        <ui:Card Grid.Row="1" Padding="20" Margin="0,0,0,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Thème sombre" FontWeight="SemiBold" FontSize="15" />
+                    <TextBlock Text="Bascule entre l'apparence sombre et claire."
+                               Opacity="0.7" Margin="0,2,0,0" />
+                </StackPanel>
+                <ui:ToggleSwitch Grid.Column="1" VerticalAlignment="Center"
+                                 IsChecked="{Binding IsDarkTheme, Mode=TwoWay}" />
+            </Grid>
+        </ui:Card>
+
+        <ui:Card Grid.Row="2" Padding="20">
+            <StackPanel>
+                <TextBlock Text="À propos" FontWeight="SemiBold" FontSize="15" Margin="0,0,0,8" />
+                <TextBlock>
+                    <Run Text="Loadout" FontWeight="SemiBold" />
+                    <Run Text="— optimisation PC pour le gaming, sûre et réversible." />
+                </TextBlock>
+                <TextBlock Margin="0,4,0,0" Opacity="0.7">
+                    <Run Text="Version" />
+                    <Run Text="{Binding Version, Mode=OneWay}" />
+                    <Run Text="· Licence MIT" />
+                </TextBlock>
+                <ui:HyperlinkButton Margin="0,8,0,0"
+                                    Content="github.com/Zedoww/loadout"
+                                    NavigateUri="{Binding RepositoryUrl}" />
+            </StackPanel>
+        </ui:Card>
+    </Grid>
+</Page>

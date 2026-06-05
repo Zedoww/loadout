@@ -26,13 +26,16 @@ public static class ServiceRegistration
         services.AddSingleton<TempCleaner>();
         services.AddSingleton<RestorePointService>();
         services.AddSingleton<ProcessService>();
+        services.AddSingleton<TweakService>();
         services.AddSingleton<SurgeService>();
 
         // ViewModels.
         services.AddTransient<DashboardViewModel>();
         services.AddTransient<SurgeViewModel>();
         services.AddTransient<ProcessesViewModel>();
+        services.AddTransient<TweaksViewModel>();
         services.AddTransient<CleanupViewModel>();
+        services.AddTransient<SettingsViewModel>();
 
         // Fenêtre principale.
         services.AddSingleton<MainWindow>();
