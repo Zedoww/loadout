@@ -1,35 +1,33 @@
-# Politique de sécurité
+# Security Policy
 
-## Surface d'exposition
+## Attack surface
 
-Loadout s'exécute avec les **droits administrateur** et modifie des paramètres
-système (plan d'alimentation, registre, processus). La sécurité est donc une
-préoccupation de premier ordre.
+Loadout runs with **administrator rights** and modifies system settings (power
+plan, registry, processes). Security is therefore a first-order concern.
 
-Garanties du projet :
+Project guarantees:
 
-- **Aucune communication réseau** n'est effectuée à des fins de télémétrie ou de
-  collecte de données. Les seules actions réseau possibles sont explicites et
-  initiées par l'utilisateur.
-- **Toute modification système est sauvegardée** et réversible (voir le principe
-  directeur dans `CONTRIBUTING.md`).
-- Le code est entièrement open source et auditable.
+- **No network communication** is performed for telemetry or data collection.
+  The only possible network actions are explicit and user-initiated.
+- **Every system change is backed up** and reversible (see the guiding
+  principle in `CONTRIBUTING.md`).
+- The code is fully open source and auditable.
 
-## Signaler une vulnérabilité
+## Reporting a vulnerability
 
-Si tu découvres une faille de sécurité, **n'ouvre pas d'issue publique**.
+If you discover a security flaw, **do not open a public issue**.
 
-Utilise plutôt la fonction
+Instead use
 [GitHub Security Advisories](https://github.com/Zedoww/loadout/security/advisories/new)
-pour un signalement privé, ou contacte directement le mainteneur.
+for a private report, or contact the maintainer directly.
 
-Tu peux t'attendre à :
+You can expect:
 
-- une première réponse sous **72 heures** ;
-- une évaluation et, si confirmée, un correctif priorisé ;
-- un crédit dans les notes de version (sauf si tu préfères l'anonymat).
+- a first response within **72 hours**;
+- an assessment and, if confirmed, a prioritized fix;
+- credit in the release notes (unless you prefer to remain anonymous).
 
-## Versions supportées
+## Supported versions
 
-Le projet étant en développement actif, seule la dernière version de la branche
-`main` reçoit des correctifs de sécurité.
+As the project is under active development, only the latest version of the
+`main` branch receives security fixes.

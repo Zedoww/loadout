@@ -1,5 +1,5 @@
-name: 🐛 Rapport de bug
-description: Signaler un dysfonctionnement
+name: 🐛 Bug report
+description: Report a malfunction
 title: "[Bug] "
 labels: ["bug"]
 body:
@@ -7,40 +7,40 @@ body:
     id: description
     attributes:
       label: Description
-      description: Décris clairement le problème.
+      description: Clearly describe the problem.
     validations:
       required: true
   - type: textarea
     id: repro
     attributes:
-      label: Étapes pour reproduire
+      label: Steps to reproduce
       placeholder: |
-        1. Ouvrir l'onglet ...
-        2. Cliquer sur ...
-        3. Observer ...
+        1. Open the ... tab
+        2. Click on ...
+        3. Observe ...
     validations:
       required: true
   - type: textarea
     id: expected
     attributes:
-      label: Comportement attendu
+      label: Expected behavior
     validations:
       required: true
   - type: input
     id: windows
     attributes:
-      label: Version de Windows
+      label: Windows version
       placeholder: "Windows 11 23H2"
     validations:
       required: true
   - type: input
     id: hardware
     attributes:
-      label: Matériel (CPU / GPU)
+      label: Hardware (CPU / GPU)
       placeholder: "Ryzen 7 5800X / RTX 3070"
   - type: textarea
     id: logs
     attributes:
       label: Logs
-      description: Colle le contenu de %APPDATA%\Loadout\logs si pertinent.
+      description: Paste the contents of %APPDATA%\Loadout\logs if relevant.
       render: shell
