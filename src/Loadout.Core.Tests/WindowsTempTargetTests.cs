@@ -1,12 +1,12 @@
-using Loadout.Core.Optimization;
+using Loadout.Core.Optimization.Cleanup;
 
 namespace Loadout.Core.Tests;
 
-public class TempCleanerTests : IDisposable
+public class WindowsTempTargetTests : IDisposable
 {
     private readonly string _root;
 
-    public TempCleanerTests()
+    public WindowsTempTargetTests()
     {
         _root = Path.Combine(Path.GetTempPath(), "loadout-tests-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_root);
@@ -26,25 +26,25 @@ public class TempCleanerTests : IDisposable
     public void Scan_computes_the_total_size()
     {
         long expected = SeedFiles();
-        var cleaner = new TempCleaner(new[] { _root });
+        var target = new WindowsTempTarget(new[] { _root });
 
-        Assert.Equal(expected, cleaner.Scan());
+        Assert.Equal(expected, target.Scan());
     }
 
     [Fact]
     public void Scan_zero_when_empty()
     {
-        var cleaner = new TempCleaner(new[] { _root });
-        Assert.Equal(0, cleaner.Scan());
+        var target = new WindowsTempTarget(new[] { _root });
+        Assert.Equal(0, target.Scan());
     }
 
     [Fact]
     public void Clean_deletes_files_and_returns_freed_space()
     {
         long expected = SeedFiles();
-        var cleaner = new TempCleaner(new[] { _root });
+        var target = new WindowsTempTarget(new[] { _root });
 
-        var result = cleaner.Clean();
+        var result = target.Clean();
 
         Assert.True(result.Success);
         Assert.Equal(expected, result.BytesFreed);
@@ -54,11 +54,20 @@ public class TempCleanerTests : IDisposable
     [Fact]
     public void Clean_ignores_a_missing_directory()
     {
-        var cleaner = new TempCleaner(new[] { Path.Combine(_root, "nope") });
-        var result = cleaner.Clean();
+        var target = new WindowsTempTarget(new[] { Path.Combine(_root, "nope") });
+        var result = target.Clean();
 
         Assert.True(result.Success);
         Assert.Equal(0, result.BytesFreed);
+    }
+
+    [Fact]
+    public void Category_is_safe_and_selected_by_default()
+    {
+        var target = new WindowsTempTarget();
+        Assert.Equal("windows-temp", target.Category.Id);
+        Assert.Equal(CleanupRisk.Safe, target.Category.Risk);
+        Assert.True(target.Category.SelectedByDefault);
     }
 
     public void Dispose()

@@ -5,6 +5,7 @@ using Loadout.App.ViewModels;
 using Loadout.Core.Backup;
 using Loadout.Core.Monitoring;
 using Loadout.Core.Optimization;
+using Loadout.Core.Optimization.Cleanup;
 
 namespace Loadout.App.Services;
 
@@ -23,8 +24,13 @@ public static class ServiceRegistration
         services.AddSingleton<HardwareMonitor>();
         services.AddSingleton<PowerPlanService>();
         services.AddSingleton<MemoryCleaner>();
-        services.AddSingleton<TempCleaner>();
         services.AddSingleton<RestorePointService>();
+
+        // Cleanup categories + orchestrator.
+        services.AddSingleton<ICleanupTarget, WindowsTempTarget>();
+        services.AddSingleton<ICleanupTarget, BrowserCacheTarget>();
+        services.AddSingleton<ICleanupTarget, RecycleBinTarget>();
+        services.AddSingleton<CleanupService>();
         services.AddSingleton<ProcessService>();
         services.AddSingleton<TweakService>();
         services.AddSingleton<SurgeService>();
