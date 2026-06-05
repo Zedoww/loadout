@@ -3,9 +3,9 @@ using LibreHardwareMonitor.Hardware;
 namespace Loadout.Core.Monitoring;
 
 /// <summary>
-/// Lit les capteurs matériels (charge et température CPU/GPU, mémoire)
-/// via LibreHardwareMonitor. Nécessite les droits administrateur pour
-/// accéder à certains capteurs (ring0).
+/// Reads hardware sensors (CPU/GPU load and temperature, memory) through
+/// LibreHardwareMonitor. Administrator rights are required to access some
+/// sensors (ring0 driver).
 /// </summary>
 public sealed class HardwareMonitor : IDisposable
 {
@@ -34,7 +34,7 @@ public sealed class HardwareMonitor : IDisposable
         _opened = true;
     }
 
-    /// <summary>Effectue une lecture synchrone de tous les capteurs.</summary>
+    /// <summary>Performs a synchronous read of every sensor.</summary>
     public SystemMetrics Read()
     {
         if (!_opened) Start();
@@ -45,49 +45,50 @@ public sealed class HardwareMonitor : IDisposable
         float? memUsed = null, memAvail = null, memLoad = null;
         string? cpuName = null, gpuName = null;
 
+        // Pick the primary GPU first: a machine can expose both an integrated
+        // GPU (AMD APU / Intel iGPU) and a discrete card (e.g. an NVIDIA RTX).
+        // We must report the discrete one, not whichever happens to be first.
+        IHardware? primaryGpu = SelectPrimaryGpu();
+
         foreach (var hw in _computer.Hardware)
         {
-            switch (hw.HardwareType)
+            if (hw.HardwareType == HardwareType.Cpu)
             {
-                case HardwareType.Cpu:
-                    cpuName ??= hw.Name;
-                    foreach (var s in hw.Sensors)
-                    {
-                        if (s.SensorType == SensorType.Load && s.Name == "CPU Total")
-                            cpuLoad = s.Value;
-                        else if (s.SensorType == SensorType.Temperature &&
-                                 (s.Name.Contains("Package") || s.Name.Contains("Tctl") ||
-                                  s.Name.Contains("Core (Tctl/Tdie)") || cpuTemp is null))
-                            cpuTemp = s.Value;
-                    }
-                    break;
-
-                case HardwareType.GpuNvidia:
-                case HardwareType.GpuAmd:
-                case HardwareType.GpuIntel:
-                    gpuName ??= hw.Name;
-                    foreach (var s in hw.Sensors)
-                    {
-                        if (s.SensorType == SensorType.Load &&
-                            (s.Name == "GPU Core" || s.Name.Contains("GPU")))
-                            gpuLoad ??= s.Value;
-                        else if (s.SensorType == SensorType.Temperature &&
-                                 (s.Name.Contains("Core") || gpuTemp is null))
-                            gpuTemp = s.Value;
-                    }
-                    break;
-
-                case HardwareType.Memory:
-                    foreach (var s in hw.Sensors)
-                    {
-                        if (s.SensorType == SensorType.Data && s.Name == "Memory Used")
-                            memUsed = s.Value;
-                        else if (s.SensorType == SensorType.Data && s.Name == "Memory Available")
-                            memAvail = s.Value;
-                        else if (s.SensorType == SensorType.Load && s.Name == "Memory")
-                            memLoad = s.Value;
-                    }
-                    break;
+                cpuName ??= hw.Name;
+                foreach (var s in hw.Sensors)
+                {
+                    if (s.SensorType == SensorType.Load && s.Name == "CPU Total")
+                        cpuLoad = s.Value;
+                    else if (s.SensorType == SensorType.Temperature &&
+                             (s.Name.Contains("Package") || s.Name.Contains("Tctl") ||
+                              s.Name.Contains("Core (Tctl/Tdie)") || cpuTemp is null))
+                        cpuTemp = s.Value;
+                }
+            }
+            else if (ReferenceEquals(hw, primaryGpu))
+            {
+                gpuName = hw.Name;
+                foreach (var s in hw.Sensors)
+                {
+                    if (s.SensorType == SensorType.Load &&
+                        (s.Name == "GPU Core" || s.Name.Contains("GPU")))
+                        gpuLoad ??= s.Value;
+                    else if (s.SensorType == SensorType.Temperature &&
+                             (s.Name.Contains("Core") || gpuTemp is null))
+                        gpuTemp = s.Value;
+                }
+            }
+            else if (hw.HardwareType == HardwareType.Memory)
+            {
+                foreach (var s in hw.Sensors)
+                {
+                    if (s.SensorType == SensorType.Data && s.Name == "Memory Used")
+                        memUsed = s.Value;
+                    else if (s.SensorType == SensorType.Data && s.Name == "Memory Available")
+                        memAvail = s.Value;
+                    else if (s.SensorType == SensorType.Load && s.Name == "Memory")
+                        memLoad = s.Value;
+                }
             }
         }
 
@@ -109,6 +110,43 @@ public sealed class HardwareMonitor : IDisposable
         };
     }
 
+    /// <summary>
+    /// Selects the most relevant GPU. Discrete cards (NVIDIA, then AMD) win over
+    /// integrated graphics (Intel); ties are broken by current core load so the
+    /// card actually doing the work is reported.
+    /// </summary>
+    private IHardware? SelectPrimaryGpu()
+    {
+        IHardware? best = null;
+        int bestScore = int.MinValue;
+
+        foreach (var hw in _computer.Hardware)
+        {
+            int priority = hw.HardwareType switch
+            {
+                HardwareType.GpuNvidia => 3,
+                HardwareType.GpuAmd => 2,
+                HardwareType.GpuIntel => 1,
+                _ => -1,
+            };
+            if (priority < 0) continue;
+
+            float load = 0;
+            foreach (var s in hw.Sensors)
+                if (s.SensorType == SensorType.Load && s.Name == "GPU Core")
+                    load = s.Value ?? 0;
+
+            int score = priority * 1000 + (int)load;
+            if (score > bestScore)
+            {
+                bestScore = score;
+                best = hw;
+            }
+        }
+
+        return best;
+    }
+
     public void Dispose()
     {
         if (_opened)
@@ -118,7 +156,7 @@ public sealed class HardwareMonitor : IDisposable
         }
     }
 
-    /// <summary>Force la mise à jour récursive des sous-composants.</summary>
+    /// <summary>Forces a recursive update of every sub-component.</summary>
     private sealed class UpdateVisitor : IVisitor
     {
         public void VisitComputer(IComputer computer) => computer.Traverse(this);
