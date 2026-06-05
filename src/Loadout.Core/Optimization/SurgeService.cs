@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 
@@ -9,6 +10,7 @@ namespace Loadout.Core.Optimization;
 public sealed record SurgeState
 {
     public Guid? PreviousPowerPlan { get; init; }
+    public IReadOnlyList<string> SuspendedProcesses { get; init; } = Array.Empty<string>();
     public DateTime AppliedAt { get; init; } = DateTime.Now;
 }
 
@@ -21,15 +23,27 @@ public sealed class SurgeService
 {
     private readonly PowerPlanService _power;
     private readonly MemoryCleaner _memory;
+    private readonly ProcessService _process;
     private readonly ILogger<SurgeService> _logger;
     private readonly string _statePath;
 
     private static readonly JsonSerializerOptions JsonOpts = new() { WriteIndented = true };
 
-    public SurgeService(PowerPlanService power, MemoryCleaner memory, ILogger<SurgeService> logger)
+    /// <summary>
+    /// Applications d'arrière-plan suspendues par défaut pendant un Surge si elles
+    /// tournent. Suspension = pause réversible, reprise automatique à la restauration.
+    /// </summary>
+    private static readonly string[] DefaultBackgroundApps =
+    {
+        "chrome", "msedge", "firefox", "opera", "brave", "spotify", "OneDrive",
+    };
+
+    public SurgeService(PowerPlanService power, MemoryCleaner memory,
+        ProcessService process, ILogger<SurgeService> logger)
     {
         _power = power;
         _memory = memory;
+        _process = process;
         _logger = logger;
 
         string dir = Path.Combine(
@@ -55,8 +69,17 @@ public sealed class SurgeService
     {
         var log = new List<OptimizationResult>();
 
-        // 1. Capture de l'état avant modification.
-        var state = new SurgeState { PreviousPowerPlan = _power.GetActivePlan() };
+        // 1. Capture de l'état avant modification (écrit AVANT toute action pour
+        //    qu'une restauration reste possible même en cas d'arrêt impromptu).
+        var toSuspend = DefaultBackgroundApps
+            .Where(name => Process.GetProcessesByName(name).Length > 0)
+            .ToList();
+
+        var state = new SurgeState
+        {
+            PreviousPowerPlan = _power.GetActivePlan(),
+            SuspendedProcesses = toSuspend,
+        };
         File.WriteAllText(_statePath, JsonSerializer.Serialize(state, JsonOpts));
         _logger.LogInformation("Surge activé. Plan précédent : {Plan}", state.PreviousPowerPlan);
 
@@ -65,6 +88,10 @@ public sealed class SurgeService
 
         // 3. Libération de la mémoire.
         log.Add(_memory.Clean());
+
+        // 4. Mise en pause des applications d'arrière-plan.
+        foreach (var name in toSuspend)
+            log.Add(_process.Suspend(name));
 
         return log;
     }
@@ -81,6 +108,11 @@ public sealed class SurgeService
             return log;
         }
 
+        // 1. Reprise des applications suspendues.
+        foreach (var name in state.SuspendedProcesses)
+            log.Add(_process.Resume(name));
+
+        // 2. Restauration du plan d'alimentation d'origine.
         if (state.PreviousPowerPlan is Guid plan)
             log.Add(_power.SetActivePlan(plan));
         else

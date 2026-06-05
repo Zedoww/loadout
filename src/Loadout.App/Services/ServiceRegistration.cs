@@ -25,11 +25,13 @@ public static class ServiceRegistration
         services.AddSingleton<MemoryCleaner>();
         services.AddSingleton<TempCleaner>();
         services.AddSingleton<RestorePointService>();
+        services.AddSingleton<ProcessService>();
         services.AddSingleton<SurgeService>();
 
         // ViewModels.
         services.AddTransient<DashboardViewModel>();
         services.AddTransient<SurgeViewModel>();
+        services.AddTransient<ProcessesViewModel>();
         services.AddTransient<CleanupViewModel>();
 
         // Fenêtre principale.

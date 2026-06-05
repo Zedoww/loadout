@@ -1,0 +1,6 @@
+# Normalisation des fins de ligne (projet Windows / .NET)
+* text=auto eol=crlf
+
+*.png binary
+*.jpg binary
+*.ico binary

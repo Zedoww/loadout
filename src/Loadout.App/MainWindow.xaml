@@ -45,6 +45,13 @@
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
 
+                <ui:NavigationViewItem Content="Processus"
+                                       TargetPageType="{x:Type views:ProcessesPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="WindowApps24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+
                 <ui:NavigationViewItem Content="Nettoyage"
                                        TargetPageType="{x:Type views:CleanupPage}">
                     <ui:NavigationViewItem.Icon>

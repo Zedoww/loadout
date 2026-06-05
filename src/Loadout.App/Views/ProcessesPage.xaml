@@ -1,0 +1,73 @@
+<Page x:Class="Loadout.App.Views.ProcessesPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="Processus">
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Processus" FontSize="28" FontWeight="Bold" />
+            <TextBlock Text="Mets en pause les applications gourmandes pendant le jeu. La suspension est réversible : un clic sur « Reprendre » les réveille."
+                       Opacity="0.7" Margin="0,4,0,0" TextWrapping="Wrap" />
+        </StackPanel>
+
+        <ui:Card Grid.Row="1" Padding="16" Margin="0,0,0,16">
+            <StackPanel Orientation="Horizontal">
+                <ui:Button Content="Rafraîchir" Icon="{ui:SymbolIcon ArrowClockwise24}"
+                           Command="{Binding RefreshCommand}" Margin="0,0,12,0" />
+                <ui:Button Content="Libérer la RAM" Icon="{ui:SymbolIcon Broom24}"
+                           Appearance="Primary"
+                           Command="{Binding FreeMemoryCommand}" Margin="0,0,16,0" />
+                <TextBlock Text="{Binding Summary}" VerticalAlignment="Center" Opacity="0.8"
+                           TextWrapping="Wrap" />
+            </StackPanel>
+        </ui:Card>
+
+        <ui:Card Grid.Row="2" Padding="8">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding Processes}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="12,10" Margin="2"
+                                    Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                    CornerRadius="6">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14" />
+                                        <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                            <TextBlock Text="{Binding MemoryText}" Opacity="0.8" />
+                                            <TextBlock Text=" · " Opacity="0.5" />
+                                            <TextBlock Text="{Binding CountText}" Opacity="0.5" />
+                                            <TextBlock Text="   " />
+                                            <TextBlock Text="{Binding Status}" Opacity="0.6"
+                                                       Foreground="{DynamicResource SystemFillColorSuccessBrush}" />
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                    <ui:Button Grid.Column="1" Content="Suspendre"
+                                               Icon="{ui:SymbolIcon Pause24}"
+                                               Command="{Binding SuspendCommand}" Margin="0,0,8,0" />
+                                    <ui:Button Grid.Column="2" Content="Reprendre"
+                                               Icon="{ui:SymbolIcon Play24}"
+                                               Command="{Binding ResumeCommand}" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </ui:Card>
+    </Grid>
+</Page>
