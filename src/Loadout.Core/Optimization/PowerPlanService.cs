@@ -20,11 +20,17 @@ public sealed class PowerPlanService
     private static readonly Regex SchemeLine =
         new(@"GUID.*?:\s*([0-9a-fA-F\-]{36})\s*\((.*?)\)(\s*\*?)", RegexOptions.Compiled);
 
-    public IReadOnlyList<PowerPlan> ListPlans()
+    public IReadOnlyList<PowerPlan> ListPlans() =>
+        ParsePlans(ProcessRunner.Run("powercfg", "/list").StdOut);
+
+    public Guid? GetActivePlan() =>
+        ParseActivePlan(ProcessRunner.Run("powercfg", "/getactivescheme").StdOut);
+
+    /// <summary>Parse la sortie de <c>powercfg /list</c> (logique pure, testable).</summary>
+    internal static IReadOnlyList<PowerPlan> ParsePlans(string powercfgOutput)
     {
-        var result = ProcessRunner.Run("powercfg", "/list");
         var plans = new List<PowerPlan>();
-        foreach (Match m in SchemeLine.Matches(result.StdOut))
+        foreach (Match m in SchemeLine.Matches(powercfgOutput))
         {
             if (Guid.TryParse(m.Groups[1].Value, out var guid))
             {
@@ -35,10 +41,10 @@ public sealed class PowerPlanService
         return plans;
     }
 
-    public Guid? GetActivePlan()
+    /// <summary>Parse la sortie de <c>powercfg /getactivescheme</c> (logique pure, testable).</summary>
+    internal static Guid? ParseActivePlan(string powercfgOutput)
     {
-        var result = ProcessRunner.Run("powercfg", "/getactivescheme");
-        var m = Regex.Match(result.StdOut, @"([0-9a-fA-F\-]{36})");
+        var m = Regex.Match(powercfgOutput, @"([0-9a-fA-F\-]{36})");
         return m.Success && Guid.TryParse(m.Value, out var g) ? g : null;
     }
 

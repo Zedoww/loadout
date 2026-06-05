@@ -7,8 +7,21 @@ namespace Loadout.Core.Optimization;
 /// </summary>
 public sealed class TempCleaner
 {
-    private static IEnumerable<string> TempDirectories()
+    private readonly IReadOnlyList<string>? _overrideDirectories;
+
+    public TempCleaner() { }
+
+    /// <summary>Constructeur de test : cible des dossiers spécifiques.</summary>
+    public TempCleaner(IReadOnlyList<string> directories) => _overrideDirectories = directories;
+
+    private IEnumerable<string> TempDirectories()
     {
+        if (_overrideDirectories is not null)
+        {
+            foreach (var d in _overrideDirectories) yield return d;
+            yield break;
+        }
+
         yield return Path.GetTempPath();                                    // %TEMP% utilisateur
         yield return Environment.ExpandEnvironmentVariables(@"%SystemRoot%\Temp");
         string local = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);

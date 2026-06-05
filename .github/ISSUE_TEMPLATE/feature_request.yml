@@ -1,0 +1,29 @@
+name: 💡 Proposition de fonctionnalité
+description: Suggérer une amélioration ou une nouvelle optimisation
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problème / besoin
+      description: Quel manque ou quelle frustration cette fonctionnalité résout-elle ?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solution proposée
+    validations:
+      required: true
+  - type: dropdown
+    id: reversible
+    attributes:
+      label: Modifie-t-elle le système ?
+      description: Rappel — toute modification système doit être réversible.
+      options:
+        - "Non, lecture seule / UI uniquement"
+        - "Oui, et je sais comment la rendre réversible"
+        - "Oui, mais je ne suis pas sûr de la réversibilité"
+    validations:
+      required: true
