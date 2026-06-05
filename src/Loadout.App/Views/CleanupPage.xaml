@@ -8,16 +8,55 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Margin="0,0,0,20">
             <TextBlock Text="Cleanup" Style="{StaticResource Type.PageTitle}" />
-            <TextBlock Text="Delete temporary files. Anything currently in use is safely skipped."
+            <TextBlock Text="Preview each category, then delete only what you pick. Files in use are safely skipped."
                        Style="{StaticResource Type.PageSubtitle}" Margin="0,4,0,0" />
         </StackPanel>
 
-        <ui:Card Grid.Row="1" Padding="24" Margin="0,0,0,16">
+        <!-- Category list -->
+        <ItemsControl Grid.Row="1" ItemsSource="{Binding Categories}" Margin="0,0,0,16">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Style="{StaticResource Surface.Row}" Padding="16,12" Margin="0,0,0,8">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected}"
+                                      VerticalAlignment="Center" Margin="0,0,12,0" />
+
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Name}" Style="{StaticResource Type.CardTitle}" />
+                                    <Border Style="{StaticResource Pill}" Background="#33F6B73C" Margin="10,1,0,0"
+                                            Visibility="{Binding IsCaution, Converter={StaticResource BoolToVisibility}}">
+                                        <TextBlock Text="Caution" FontSize="11" FontWeight="SemiBold"
+                                                   Foreground="{StaticResource Warning}" />
+                                    </Border>
+                                </StackPanel>
+                                <TextBlock Text="{Binding Description}" Style="{StaticResource Type.Caption}"
+                                           Margin="0,2,16,0" TextWrapping="Wrap" />
+                            </StackPanel>
+
+                            <TextBlock Grid.Column="2" Text="{Binding SizeText}" VerticalAlignment="Center"
+                                       FontFamily="{StaticResource Font.Mono}" FontSize="14"
+                                       Foreground="{StaticResource Text.Primary}" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- Actions -->
+        <ui:Card Grid.Row="2" Padding="20" Margin="0,0,0,16">
             <StackPanel>
                 <TextBlock Text="{Binding ScanSummary}" Style="{StaticResource Type.Body}"
                            FontSize="14" Margin="0,0,0,16" />
@@ -26,7 +65,7 @@
                                Command="{Binding ScanCommand}"
                                IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBool}}"
                                Margin="0,0,12,0" />
-                    <ui:Button Content="Clean" Icon="{ui:SymbolIcon Broom24}"
+                    <ui:Button Content="Clean selected" Icon="{ui:SymbolIcon Broom24}"
                                Appearance="Primary"
                                IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBool}}"
                                Command="{Binding CleanCommand}" Margin="0,0,12,0" />
@@ -40,7 +79,7 @@
             </StackPanel>
         </ui:Card>
 
-        <Border Grid.Row="2" Style="{StaticResource Surface}" Padding="16">
+        <Border Grid.Row="3" Style="{StaticResource Surface}" Padding="16">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding Log}">
                     <ItemsControl.ItemTemplate>
