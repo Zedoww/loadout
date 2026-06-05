@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 namespace Loadout.Core.Optimization;
 
 /// <summary>
-/// État capturé avant l'activation du Surge, pour pouvoir tout restaurer.
+/// State captured before Surge is activated, so everything can be restored.
 /// </summary>
 public sealed record SurgeState
 {
@@ -15,9 +15,9 @@ public sealed record SurgeState
 }
 
 /// <summary>
-/// Orchestrateur du « Surge ». Applique un ensemble d'optimisations
-/// réversibles puis sait revenir à l'état initial grâce à un instantané
-/// persisté sur disque (survit à un redémarrage de l'application).
+/// Orchestrates "Surge". Applies a set of reversible optimizations, then knows
+/// how to return to the initial state thanks to a snapshot persisted on disk
+/// (it survives an application restart).
 /// </summary>
 public sealed class SurgeService
 {
@@ -30,8 +30,8 @@ public sealed class SurgeService
     private static readonly JsonSerializerOptions JsonOpts = new() { WriteIndented = true };
 
     /// <summary>
-    /// Applications d'arrière-plan suspendues par défaut pendant un Surge si elles
-    /// tournent. Suspension = pause réversible, reprise automatique à la restauration.
+    /// Background apps suspended by default during a Surge when they are running.
+    /// Suspension is a reversible pause; they are resumed automatically on restore.
     /// </summary>
     private static readonly string[] DefaultBackgroundApps =
     {
@@ -64,13 +64,13 @@ public sealed class SurgeService
         }
     }
 
-    /// <summary>Active le Surge et mémorise l'état précédent.</summary>
+    /// <summary>Activates Surge and remembers the previous state.</summary>
     public IReadOnlyList<OptimizationResult> Apply()
     {
         var log = new List<OptimizationResult>();
 
-        // 1. Capture de l'état avant modification (écrit AVANT toute action pour
-        //    qu'une restauration reste possible même en cas d'arrêt impromptu).
+        // 1. Capture state before any change (written BEFORE any action so a
+        //    restore stays possible even after an unexpected shutdown).
         var toSuspend = DefaultBackgroundApps
             .Where(name => Process.GetProcessesByName(name).Length > 0)
             .ToList();
@@ -81,22 +81,22 @@ public sealed class SurgeService
             SuspendedProcesses = toSuspend,
         };
         File.WriteAllText(_statePath, JsonSerializer.Serialize(state, JsonOpts));
-        _logger.LogInformation("Surge activé. Plan précédent : {Plan}", state.PreviousPowerPlan);
+        _logger.LogInformation("Surge activated. Previous plan: {Plan}", state.PreviousPowerPlan);
 
-        // 2. Plan d'alimentation hautes performances.
+        // 2. High-performance power plan.
         log.Add(_power.ActivateHighPerformance());
 
-        // 3. Libération de la mémoire.
+        // 3. Free memory.
         log.Add(_memory.Clean());
 
-        // 4. Mise en pause des applications d'arrière-plan.
+        // 4. Pause background apps.
         foreach (var name in toSuspend)
             log.Add(_process.Suspend(name));
 
         return log;
     }
 
-    /// <summary>Restaure l'état d'avant le Surge.</summary>
+    /// <summary>Restores the pre-Surge state.</summary>
     public IReadOnlyList<OptimizationResult> Restore()
     {
         var log = new List<OptimizationResult>();
@@ -104,25 +104,25 @@ public sealed class SurgeService
 
         if (state is null)
         {
-            log.Add(OptimizationResult.Fail("Aucun Surge actif à restaurer."));
+            log.Add(OptimizationResult.Fail("No active Surge to restore."));
             return log;
         }
 
-        // 1. Reprise des applications suspendues.
+        // 1. Resume the suspended apps.
         foreach (var name in state.SuspendedProcesses)
             log.Add(_process.Resume(name));
 
-        // 2. Restauration du plan d'alimentation d'origine.
+        // 2. Restore the original power plan.
         if (state.PreviousPowerPlan is Guid plan)
             log.Add(_power.SetActivePlan(plan));
         else
             log.Add(_power.SetActivePlan(PowerPlanService.Balanced));
 
         try { File.Delete(_statePath); }
-        catch { /* sera réécrit au prochain Apply */ }
+        catch { /* will be rewritten on the next Apply */ }
 
-        _logger.LogInformation("Surge désactivé, état restauré.");
-        log.Add(OptimizationResult.Ok("Surge désactivé, état initial restauré."));
+        _logger.LogInformation("Surge deactivated, state restored.");
+        log.Add(OptimizationResult.Ok("Surge deactivated, original state restored."));
         return log;
     }
 }

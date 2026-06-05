@@ -2,7 +2,7 @@ using System.Diagnostics;
 
 namespace Loadout.Core.Common;
 
-/// <summary>Petit utilitaire pour lancer un exécutable et capturer sa sortie.</summary>
+/// <summary>Small helper to launch an executable and capture its output.</summary>
 public static class ProcessRunner
 {
     public sealed record Result(int ExitCode, string StdOut, string StdErr)
@@ -31,7 +31,7 @@ public static class ProcessRunner
         if (!process.WaitForExit(timeoutMs))
         {
             try { process.Kill(true); } catch { /* best effort */ }
-            return new Result(-1, stdout, "Délai dépassé");
+            return new Result(-1, stdout, "Timed out");
         }
 
         return new Result(process.ExitCode, stdout, stderr);

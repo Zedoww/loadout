@@ -1,11 +1,12 @@
 using System.Collections.ObjectModel;
+using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Loadout.Core.Optimization;
 
 namespace Loadout.App.ViewModels;
 
-/// <summary>Une ligne représentant un tweak registre, avec son état et son bascule.</summary>
+/// <summary>A single registry tweak row, with its current state and toggle.</summary>
 public partial class TweakRowViewModel : ObservableObject
 {
     private readonly TweakService _service;
@@ -16,7 +17,7 @@ public partial class TweakRowViewModel : ObservableObject
     public bool RequiresReboot => _def.RequiresReboot;
 
     [ObservableProperty] private bool _isApplied;
-    [ObservableProperty] private string _buttonText = "Activer";
+    [ObservableProperty] private string _buttonText = "Enable";
     [ObservableProperty] private string _status = "";
 
     public TweakRowViewModel(TweakDefinition def, TweakService service)
@@ -29,7 +30,7 @@ public partial class TweakRowViewModel : ObservableObject
     private void Refresh()
     {
         IsApplied = _service.IsApplied(_def);
-        ButtonText = IsApplied ? "Désactiver" : "Activer";
+        ButtonText = IsApplied ? "Disable" : "Enable";
     }
 
     [RelayCommand]
@@ -41,13 +42,28 @@ public partial class TweakRowViewModel : ObservableObject
     }
 }
 
+/// <summary>A named group of tweaks (Performance, Privacy, Interface...).</summary>
+public sealed class TweakCategoryViewModel
+{
+    public string Name { get; }
+    public ObservableCollection<TweakRowViewModel> Tweaks { get; }
+
+    public TweakCategoryViewModel(string name, IEnumerable<TweakRowViewModel> tweaks)
+    {
+        Name = name;
+        Tweaks = new ObservableCollection<TweakRowViewModel>(tweaks);
+    }
+}
+
 public partial class TweaksViewModel : ObservableObject
 {
-    public ObservableCollection<TweakRowViewModel> Tweaks { get; } = new();
+    public ObservableCollection<TweakCategoryViewModel> Categories { get; } = new();
 
     public TweaksViewModel(TweakService service)
     {
-        foreach (var def in service.Definitions)
-            Tweaks.Add(new TweakRowViewModel(def, service));
+        foreach (var group in service.Definitions.GroupBy(d => d.Category))
+            Categories.Add(new TweakCategoryViewModel(
+                group.Key,
+                group.Select(d => new TweakRowViewModel(d, service))));
     }
 }

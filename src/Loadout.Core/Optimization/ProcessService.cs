@@ -5,14 +5,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Loadout.Core.Optimization;
 
-/// <summary>Un groupe de processus partageant le même nom, avec leur empreinte mémoire.</summary>
+/// <summary>A group of processes sharing the same name, with their memory footprint.</summary>
 public sealed record ProcessGroup(string Name, long WorkingSetBytes, int Count);
 
 /// <summary>
-/// Gère les processus en cours d'exécution. La suspension utilise
-/// <c>NtSuspendProcess</c> / <c>NtResumeProcess</c> : c'est une mise en pause
-/// **entièrement réversible** (contrairement à la fermeture forcée), idéale pour
-/// libérer CPU/RAM pendant une session de jeu sans perdre l'état des applications.
+/// Manages running processes. Suspension uses <c>NtSuspendProcess</c> /
+/// <c>NtResumeProcess</c>: a **fully reversible** pause (unlike force-closing),
+/// ideal for freeing CPU/RAM during a gaming session without losing app state.
 /// </summary>
 public sealed class ProcessService
 {
@@ -24,7 +23,7 @@ public sealed class ProcessService
 
     private readonly ILogger<ProcessService> _logger;
 
-    /// <summary>Processus système qu'il ne faut JAMAIS suspendre (stabilité de Windows).</summary>
+    /// <summary>System processes that must NEVER be suspended (Windows stability).</summary>
     private static readonly HashSet<string> Critical = new(StringComparer.OrdinalIgnoreCase)
     {
         "System", "Idle", "Registry", "smss", "csrss", "wininit", "winlogon",
@@ -36,12 +35,12 @@ public sealed class ProcessService
 
     public ProcessService(ILogger<ProcessService> logger) => _logger = logger;
 
-    /// <summary>Indique si un processus peut être suspendu sans risque pour le système.</summary>
+    /// <summary>Tells whether a process can be safely suspended.</summary>
     public bool IsSuspendable(string processName) => !Critical.Contains(processName);
 
     /// <summary>
-    /// Liste les applications les plus gourmandes en mémoire, regroupées par nom,
-    /// en excluant les processus système critiques.
+    /// Lists the most memory-hungry applications, grouped by name, excluding
+    /// critical system processes.
     /// </summary>
     public IReadOnlyList<ProcessGroup> ListTopByMemory(int count = 25)
     {
@@ -60,7 +59,7 @@ public sealed class ProcessService
                 else
                     groups[name] = (ws, 1);
             }
-            catch { /* process terminé ou inaccessible */ }
+            catch { /* process exited or inaccessible */ }
             finally { p.Dispose(); }
         }
 
@@ -71,18 +70,18 @@ public sealed class ProcessService
             .ToList();
     }
 
-    /// <summary>Suspend tous les processus portant ce nom. Réversible via <see cref="Resume"/>.</summary>
+    /// <summary>Suspends every process with this name. Reversible via <see cref="Resume"/>.</summary>
     public OptimizationResult Suspend(string processName)
     {
         if (!IsSuspendable(processName))
-            return OptimizationResult.Fail($"« {processName} » est un processus système protégé.");
+            return OptimizationResult.Fail($"'{processName}' is a protected system process.");
 
-        return Apply(processName, NtSuspendProcess, "suspendu");
+        return Apply(processName, NtSuspendProcess, "suspended");
     }
 
-    /// <summary>Reprend tous les processus portant ce nom préalablement suspendus.</summary>
+    /// <summary>Resumes every previously suspended process with this name.</summary>
     public OptimizationResult Resume(string processName) =>
-        Apply(processName, NtResumeProcess, "repris");
+        Apply(processName, NtResumeProcess, "resumed");
 
     private OptimizationResult Apply(string processName, Func<IntPtr, uint> action, string verb)
     {
@@ -94,15 +93,15 @@ public sealed class ProcessService
                 action(p.Handle);
                 affected++;
             }
-            catch (Win32Exception) { /* accès refusé : processus protégé */ }
-            catch (InvalidOperationException) { /* déjà terminé */ }
+            catch (Win32Exception) { /* access denied: protected process */ }
+            catch (InvalidOperationException) { /* already exited */ }
             finally { p.Dispose(); }
         }
 
         if (affected == 0)
-            return OptimizationResult.Fail($"Aucun processus « {processName} » {verb}.");
+            return OptimizationResult.Fail($"No '{processName}' process {verb}.");
 
-        _logger.LogInformation("{Count} processus « {Name} » {Verb}.", affected, processName, verb);
-        return OptimizationResult.Ok($"{affected} processus « {processName} » {verb}.");
+        _logger.LogInformation("{Count} '{Name}' process(es) {Verb}.", affected, processName, verb);
+        return OptimizationResult.Ok($"{affected} '{processName}' process(es) {verb}.");
     }
 }

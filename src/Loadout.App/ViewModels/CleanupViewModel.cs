@@ -12,7 +12,7 @@ public partial class CleanupViewModel : ObservableObject
     private readonly TempCleaner _temp;
     private readonly RestorePointService _restorePoint;
 
-    [ObservableProperty] private string _scanSummary = "Lance une analyse pour estimer l'espace récupérable.";
+    [ObservableProperty] private string _scanSummary = "Run a scan to estimate reclaimable space.";
     [ObservableProperty] private bool _isBusy;
 
     public ObservableCollection<string> Log { get; } = new();
@@ -30,7 +30,7 @@ public partial class CleanupViewModel : ObservableObject
         try
         {
             long bytes = await Task.Run(() => _temp.Scan());
-            ScanSummary = $"Espace temporaire récupérable : {BytesToReadableConverter.Format(bytes)}";
+            ScanSummary = $"Reclaimable temporary space: {BytesToReadableConverter.Format(bytes)}";
         }
         finally { IsBusy = false; }
     }
@@ -45,9 +45,9 @@ public partial class CleanupViewModel : ObservableObject
             var result = await Task.Run(() => _temp.Clean());
             string line = (result.Success ? "✓ " : "✗ ") + result.Message;
             if (result.BytesFreed > 0)
-                line += $" — {BytesToReadableConverter.Format(result.BytesFreed)} libérés";
+                line += $" — {BytesToReadableConverter.Format(result.BytesFreed)} freed";
             Log.Add(line);
-            ScanSummary = $"Nettoyage terminé : {BytesToReadableConverter.Format(result.BytesFreed)} libérés.";
+            ScanSummary = $"Cleanup complete: {BytesToReadableConverter.Format(result.BytesFreed)} freed.";
         }
         finally { IsBusy = false; }
     }

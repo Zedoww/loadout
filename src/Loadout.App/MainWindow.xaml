@@ -3,12 +3,13 @@
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
                  xmlns:views="clr-namespace:Loadout.App.Views"
-                 Title="Loadout — Optimisation Gaming"
-                 Width="1000" Height="680"
-                 MinWidth="820" MinHeight="560"
+                 Title="Loadout"
+                 Width="1040" Height="700"
+                 MinWidth="860" MinHeight="580"
                  WindowStartupLocation="CenterScreen"
                  ExtendsContentIntoTitleBar="True"
-                 WindowBackdropType="Mica">
+                 WindowBackdropType="None"
+                 Background="{StaticResource Bg.Window}">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -16,12 +17,21 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <ui:TitleBar Grid.Row="0" Title="Loadout" Icon="{x:Null}">
+        <!-- Title bar with the brand wordmark -->
+        <ui:TitleBar Grid.Row="0" Icon="{x:Null}" Height="48">
             <ui:TitleBar.Header>
-                <TextBlock Margin="12,0,0,0"
-                           VerticalAlignment="Center"
-                           FontWeight="SemiBold"
-                           Text="Loadout — Optimisation Gaming" />
+                <StackPanel Orientation="Horizontal" Margin="14,0,0,0" VerticalAlignment="Center">
+                    <Border Width="22" Height="22" CornerRadius="6"
+                            Background="{StaticResource Brand.Gradient}">
+                        <TextBlock Text="L" FontFamily="{StaticResource Font.Display}"
+                                   FontSize="14" FontWeight="Bold" Foreground="White"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <TextBlock Text="LOADOUT" Margin="10,0,0,0" VerticalAlignment="Center"
+                               FontFamily="{StaticResource Font.Display}"
+                               FontSize="15" FontWeight="Bold"
+                               Foreground="{StaticResource Brand.Gradient}" />
+                </StackPanel>
             </ui:TitleBar.Header>
         </ui:TitleBar>
 
@@ -29,9 +39,10 @@
                            Grid.Row="1"
                            PaneDisplayMode="Left"
                            IsBackButtonVisible="Collapsed"
-                           OpenPaneLength="220">
+                           IsPaneToggleVisible="False"
+                           OpenPaneLength="216">
             <ui:NavigationView.MenuItems>
-                <ui:NavigationViewItem Content="Tableau de bord"
+                <ui:NavigationViewItem Content="Dashboard"
                                        TargetPageType="{x:Type views:DashboardPage}">
                     <ui:NavigationViewItem.Icon>
                         <ui:SymbolIcon Symbol="Gauge24" />
@@ -45,7 +56,7 @@
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
 
-                <ui:NavigationViewItem Content="Processus"
+                <ui:NavigationViewItem Content="Processes"
                                        TargetPageType="{x:Type views:ProcessesPage}">
                     <ui:NavigationViewItem.Icon>
                         <ui:SymbolIcon Symbol="WindowApps24" />
@@ -59,7 +70,7 @@
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
 
-                <ui:NavigationViewItem Content="Nettoyage"
+                <ui:NavigationViewItem Content="Cleanup"
                                        TargetPageType="{x:Type views:CleanupPage}">
                     <ui:NavigationViewItem.Icon>
                         <ui:SymbolIcon Symbol="Broom24" />
@@ -68,7 +79,7 @@
             </ui:NavigationView.MenuItems>
 
             <ui:NavigationView.FooterMenuItems>
-                <ui:NavigationViewItem Content="Réglages"
+                <ui:NavigationViewItem Content="Settings"
                                        TargetPageType="{x:Type views:SettingsPage}">
                     <ui:NavigationViewItem.Icon>
                         <ui:SymbolIcon Symbol="Settings24" />

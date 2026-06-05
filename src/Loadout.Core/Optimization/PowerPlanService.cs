@@ -6,13 +6,12 @@ namespace Loadout.Core.Optimization;
 public sealed record PowerPlan(Guid Guid, string Name, bool IsActive);
 
 /// <summary>
-/// Gère les plans d'alimentation Windows via <c>powercfg</c>.
-/// Toutes les opérations sont réversibles : on mémorise le plan actif
-/// avant d'en imposer un autre.
+/// Manages Windows power plans through <c>powercfg</c>. Every operation is
+/// reversible: the active plan is remembered before another one is forced.
 /// </summary>
 public sealed class PowerPlanService
 {
-    // GUID standards Windows.
+    // Standard Windows GUIDs.
     public static readonly Guid Balanced = new("381b4222-f694-41f0-9685-ff5bb260df2e");
     public static readonly Guid HighPerformance = new("8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c");
     public static readonly Guid UltimatePerformance = new("e9a42b02-d5df-448d-aa00-03f14749eb61");
@@ -26,7 +25,7 @@ public sealed class PowerPlanService
     public Guid? GetActivePlan() =>
         ParseActivePlan(ProcessRunner.Run("powercfg", "/getactivescheme").StdOut);
 
-    /// <summary>Parse la sortie de <c>powercfg /list</c> (logique pure, testable).</summary>
+    /// <summary>Parses the output of <c>powercfg /list</c> (pure, testable logic).</summary>
     internal static IReadOnlyList<PowerPlan> ParsePlans(string powercfgOutput)
     {
         var plans = new List<PowerPlan>();
@@ -41,7 +40,7 @@ public sealed class PowerPlanService
         return plans;
     }
 
-    /// <summary>Parse la sortie de <c>powercfg /getactivescheme</c> (logique pure, testable).</summary>
+    /// <summary>Parses the output of <c>powercfg /getactivescheme</c> (pure, testable logic).</summary>
     internal static Guid? ParseActivePlan(string powercfgOutput)
     {
         var m = Regex.Match(powercfgOutput, @"([0-9a-fA-F\-]{36})");
@@ -52,17 +51,16 @@ public sealed class PowerPlanService
     {
         var result = ProcessRunner.Run("powercfg", $"/setactive {guid}");
         return result.Success
-            ? OptimizationResult.Ok($"Plan d'alimentation activé : {guid}")
-            : OptimizationResult.Fail($"Échec activation du plan : {result.StdErr}");
+            ? OptimizationResult.Ok($"Power plan activated: {guid}")
+            : OptimizationResult.Fail($"Failed to activate power plan: {result.StdErr}");
     }
 
     /// <summary>
-    /// S'assure que le plan « Performances élevées » est disponible et l'active.
-    /// Retourne le GUID du plan effectivement activé.
+    /// Ensures the "High performance" plan is available and activates it.
     /// </summary>
     public OptimizationResult ActivateHighPerformance()
     {
-        // Le plan Performances élevées est presque toujours présent ; sinon on le crée.
+        // The High performance plan is almost always present; create it otherwise.
         if (!ListPlans().Any(p => p.Guid == HighPerformance))
             ProcessRunner.Run("powercfg", $"-duplicatescheme {HighPerformance}");
 

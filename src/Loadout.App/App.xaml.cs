@@ -1,18 +1,23 @@
 using System.IO;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using Wpf.Ui.Appearance;
 using Loadout.App.Services;
 
 namespace Loadout.App;
 
 /// <summary>
-/// Point d'entrée et composition root de l'application.
+/// Application entry point and composition root.
 /// </summary>
 public partial class App : Application
 {
-    /// <summary>Fournisseur de services global (résolution depuis les vues).</summary>
+    /// <summary>Signature accent (electric indigo) used across the UI.</summary>
+    public static readonly Color BrandAccent = Color.FromRgb(0x7C, 0x6C, 0xFF);
+
+    /// <summary>Global service provider (resolved from views).</summary>
     public static IServiceProvider Services { get; private set; } = default!;
 
     private static string LogDirectory => Path.Combine(
@@ -24,15 +29,18 @@ public partial class App : Application
 
         ConfigureLogging();
 
+        // Make WPF-UI controls (nav selection, primary buttons, toggles) adopt our brand accent.
+        ApplicationAccentColorManager.Apply(BrandAccent);
+
         DispatcherUnhandledException += OnDispatcherUnhandledException;
         AppDomain.CurrentDomain.UnhandledException += (_, args) =>
-            Log.Fatal(args.ExceptionObject as Exception, "Exception non gérée (domaine d'application)");
+            Log.Fatal(args.ExceptionObject as Exception, "Unhandled exception (app domain)");
 
         var services = new ServiceCollection();
         services.AddLoadoutServices();
         Services = services.BuildServiceProvider();
 
-        Log.Information("Loadout démarre.");
+        Log.Information("Loadout starting up.");
         Services.GetRequiredService<MainWindow>().Show();
     }
 
@@ -51,15 +59,15 @@ public partial class App : Application
 
     private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
     {
-        Log.Error(e.Exception, "Exception non gérée sur le thread d'interface");
-        MessageBox.Show(e.Exception.Message, "Loadout — erreur",
+        Log.Error(e.Exception, "Unhandled exception on the UI thread");
+        MessageBox.Show(e.Exception.Message, "Loadout — error",
             MessageBoxButton.OK, MessageBoxImage.Error);
         e.Handled = true;
     }
 
     protected override void OnExit(ExitEventArgs e)
     {
-        Log.Information("Loadout s'arrête.");
+        Log.Information("Loadout shutting down.");
         Log.CloseAndFlush();
         base.OnExit(e);
     }

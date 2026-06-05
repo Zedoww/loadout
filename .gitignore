@@ -16,6 +16,12 @@ artifacts/
 # Test
 [Tt]est[Rr]esult*/
 
+# CodeGraph (local semantic index)
+.codegraph/
+
+# Agent skills (Caveman, etc.)
+.agents/
+
 # OS
 Thumbs.db
 .DS_Store

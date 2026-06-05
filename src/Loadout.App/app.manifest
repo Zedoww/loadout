@@ -2,8 +2,8 @@
 <assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1">
   <assemblyIdentity version="1.0.0.0" name="Loadout.App"/>
 
-  <!-- Optimisation PC : nécessite les droits admin pour gérer services,
-       plan d'alimentation, registre HKLM et capteurs matériels. -->
+  <!-- PC optimization: requires admin rights to manage services, the power plan,
+       the HKLM registry and hardware sensors. -->
   <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
     <security>
       <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">

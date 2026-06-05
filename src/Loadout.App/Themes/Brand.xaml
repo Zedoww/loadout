@@ -1,0 +1,156 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
+
+    <!-- ============================================================== -->
+    <!--  Loadout design system  ·  colors, type, surfaces             -->
+    <!-- ============================================================== -->
+
+    <!-- Brand / accent -->
+    <Color x:Key="Brand.PrimaryColor">#7C6CFF</Color>
+    <Color x:Key="Brand.SecondaryColor">#C15BFF</Color>
+
+    <!-- Surfaces (deep ink, fully controlled — no OS Mica tint) -->
+    <Color x:Key="Bg.BaseColor">#0B0D12</Color>
+    <Color x:Key="Bg.BaseColor2">#10131A</Color>
+    <Color x:Key="Bg.SurfaceColor">#141823</Color>
+    <Color x:Key="Bg.CardColor">#181D29</Color>
+    <Color x:Key="Bg.CardHoverColor">#212736</Color>
+    <Color x:Key="StrokeColor">#272E3D</Color>
+    <Color x:Key="StrokeStrongColor">#37405466</Color>
+
+    <!-- Text -->
+    <Color x:Key="Text.PrimaryColor">#ECEEF3</Color>
+    <Color x:Key="Text.SecondaryColor">#9AA2B2</Color>
+    <Color x:Key="Text.TertiaryColor">#646C7E</Color>
+
+    <!-- Semantic -->
+    <Color x:Key="SuccessColor">#3DD68C</Color>
+    <Color x:Key="WarningColor">#F6B73C</Color>
+    <Color x:Key="DangerColor">#FF5C6C</Color>
+
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="Brand.Primary" Color="{StaticResource Brand.PrimaryColor}" />
+    <SolidColorBrush x:Key="Brand.Secondary" Color="{StaticResource Brand.SecondaryColor}" />
+    <SolidColorBrush x:Key="Bg.Surface" Color="{StaticResource Bg.SurfaceColor}" />
+    <SolidColorBrush x:Key="Bg.Card" Color="{StaticResource Bg.CardColor}" />
+    <SolidColorBrush x:Key="Bg.CardHover" Color="{StaticResource Bg.CardHoverColor}" />
+    <SolidColorBrush x:Key="Stroke" Color="{StaticResource StrokeColor}" />
+    <SolidColorBrush x:Key="Text.Primary" Color="{StaticResource Text.PrimaryColor}" />
+    <SolidColorBrush x:Key="Text.Secondary" Color="{StaticResource Text.SecondaryColor}" />
+    <SolidColorBrush x:Key="Text.Tertiary" Color="{StaticResource Text.TertiaryColor}" />
+    <SolidColorBrush x:Key="Success" Color="{StaticResource SuccessColor}" />
+    <SolidColorBrush x:Key="Warning" Color="{StaticResource WarningColor}" />
+    <SolidColorBrush x:Key="Danger" Color="{StaticResource DangerColor}" />
+
+    <!-- Signature gradient (brand wordmark + Surge hero) -->
+    <LinearGradientBrush x:Key="Brand.Gradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="{StaticResource Brand.PrimaryColor}" Offset="0" />
+        <GradientStop Color="{StaticResource Brand.SecondaryColor}" Offset="1" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="Brand.GradientHorizontal" StartPoint="0,0" EndPoint="1,0">
+        <GradientStop Color="{StaticResource Brand.PrimaryColor}" Offset="0" />
+        <GradientStop Color="{StaticResource Brand.SecondaryColor}" Offset="1" />
+    </LinearGradientBrush>
+
+    <!-- Window background: subtle vertical depth -->
+    <LinearGradientBrush x:Key="Bg.Window" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="{StaticResource Bg.BaseColor2}" Offset="0" />
+        <GradientStop Color="{StaticResource Bg.BaseColor}" Offset="1" />
+    </LinearGradientBrush>
+
+    <!-- Fonts: modern display + monospace telemetry for that instrument feel -->
+    <FontFamily x:Key="Font.Display">Segoe UI Variable Display, Segoe UI</FontFamily>
+    <FontFamily x:Key="Font.Body">Segoe UI Variable Text, Segoe UI</FontFamily>
+    <FontFamily x:Key="Font.Mono">Cascadia Mono, Consolas, Courier New</FontFamily>
+
+    <!-- ============================ Typography ============================ -->
+
+    <Style x:Key="Type.PageTitle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource Font.Display}" />
+        <Setter Property="FontSize" Value="30" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="{StaticResource Text.Primary}" />
+    </Style>
+
+    <Style x:Key="Type.PageSubtitle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource Font.Body}" />
+        <Setter Property="FontSize" Value="13.5" />
+        <Setter Property="Foreground" Value="{StaticResource Text.Secondary}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style x:Key="Type.CardTitle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource Font.Display}" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource Text.Primary}" />
+    </Style>
+
+    <Style x:Key="Type.Body" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource Font.Body}" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="{StaticResource Text.Secondary}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style x:Key="Type.Caption" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource Font.Body}" />
+        <Setter Property="FontSize" Value="11.5" />
+        <Setter Property="Foreground" Value="{StaticResource Text.Tertiary}" />
+    </Style>
+
+    <!-- Big telemetry number (monospace = precision instrument) -->
+    <Style x:Key="Type.Metric" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource Font.Mono}" />
+        <Setter Property="FontSize" Value="30" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{StaticResource Text.Primary}" />
+    </Style>
+
+    <Style x:Key="Type.MetricUnit" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource Font.Mono}" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="{StaticResource Text.Tertiary}" />
+    </Style>
+
+    <!-- ============================ Surfaces ============================ -->
+
+    <!-- All ui:Card adopt the brand surface automatically -->
+    <Style TargetType="{x:Type ui:Card}">
+        <Setter Property="Background" Value="{StaticResource Bg.Card}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Stroke}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="20" />
+    </Style>
+
+    <!-- Bare surface panel -->
+    <Style x:Key="Surface" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource Bg.Card}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Stroke}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="12" />
+    </Style>
+
+    <!-- Interactive row that lifts on hover -->
+    <Style x:Key="Surface.Row" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource Bg.Card}" />
+        <Setter Property="BorderBrush" Value="{StaticResource Stroke}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource Bg.CardHover}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Small pill / badge -->
+    <Style x:Key="Pill" TargetType="Border">
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="7,2" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+</ResourceDictionary>

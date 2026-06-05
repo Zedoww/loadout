@@ -81,6 +81,39 @@ dotnet run --project src/Loadout.App
 > Loadout requiert l'élévation pour gérer plan d'alimentation, registre, processus
 > et capteurs matériels. Aucune donnée n'est envoyée sur le réseau.
 
+## Outils de développement
+
+Le repo intègre trois outils pour maximiser l'efficacité du développement avec les agents IA (Claude Code, etc.) :
+
+| Outil | Rôle | Gain |
+|-------|------|------|
+| [CodeGraph](https://github.com/colbymchenry/codegraph) | Indexe le code en un graph sémantique (MCP) — les agents IA naviguent la structure sans scanner les fichiers | Moins d'appels, contexte précis |
+| [RTK](https://github.com/rtk-ai/rtk) | Compresse la sortie terminal (`dotnet build`, `git status`…) avant envoi à l'IA | –60–90 % tokens d'entrée |
+| [Caveman](https://github.com/juliusbrussee/caveman) | Skill qui force l'IA à répondre ultra-concis | –65–75 % tokens de sortie |
+
+**Installation rapide (tout-en-un) :**
+
+```powershell
+.\tools\setup-dev-tools.ps1
+```
+
+**Ou manuellement :**
+
+```bash
+# CodeGraph
+npm i -g @colbymchenry/codegraph
+codegraph init -i
+codegraph install          # connecte à Claude Code
+
+# RTK (nécessite Rust ou binaire depuis GitHub Releases)
+cargo install --git https://github.com/rtk-ai/rtk
+rtk init -g                # hooks pour Claude Code
+
+# Caveman
+npx skills add JuliusBrussee/caveman
+# Activer dans la conversation : /caveman
+```
+
 ## Roadmap
 
 - [ ] Overlay FPS / monitoring en jeu

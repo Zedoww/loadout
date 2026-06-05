@@ -1,6 +1,6 @@
 namespace Loadout.Core.Optimization;
 
-/// <summary>Résultat d'une opération d'optimisation, à afficher à l'utilisateur.</summary>
+/// <summary>Result of an optimization operation, to be shown to the user.</summary>
 public sealed record OptimizationResult(bool Success, string Message, long BytesFreed = 0)
 {
     public static OptimizationResult Ok(string message, long bytesFreed = 0) =>

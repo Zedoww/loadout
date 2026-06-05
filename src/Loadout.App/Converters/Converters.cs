@@ -14,7 +14,7 @@ public sealed class BoolToVisibilityConverter : IValueConverter
         => value is Visibility.Visible;
 }
 
-/// <summary>Inverse un booléen (utile pour IsEnabled = !IsBusy).</summary>
+/// <summary>Inverts a boolean (handy for IsEnabled = !IsBusy).</summary>
 public sealed class InverseBoolConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -24,7 +24,7 @@ public sealed class InverseBoolConverter : IValueConverter
         => value is not true;
 }
 
-/// <summary>Convertit un nombre d'octets en chaîne lisible (Ko/Mo/Go).</summary>
+/// <summary>Converts a byte count into a readable string (KB/MB/GB).</summary>
 public sealed class BytesToReadableConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -41,7 +41,7 @@ public sealed class BytesToReadableConverter : IValueConverter
 
     public static string Format(long bytes)
     {
-        string[] units = { "o", "Ko", "Mo", "Go", "To" };
+        string[] units = { "B", "KB", "MB", "GB", "TB" };
         double size = bytes;
         int unit = 0;
         while (size >= 1024 && unit < units.Length - 1) { size /= 1024; unit++; }
@@ -52,7 +52,7 @@ public sealed class BytesToReadableConverter : IValueConverter
         => throw new NotSupportedException();
 }
 
-/// <summary>Affiche une valeur float? avec un suffixe, ou « — » si null.</summary>
+/// <summary>Shows a float? value with a suffix, or "—" when null.</summary>
 public sealed class NullableFloatConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

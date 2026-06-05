@@ -9,6 +9,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ui:ThemesDictionary Theme="Dark" />
                 <ui:ControlsDictionary />
+                <ResourceDictionary Source="pack://application:,,,/Themes/Brand.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <conv:BytesToReadableConverter x:Key="BytesToReadable" />

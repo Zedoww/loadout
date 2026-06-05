@@ -5,15 +5,14 @@ using Loadout.Core.Optimization;
 namespace Loadout.Core.Backup;
 
 /// <summary>
-/// Crée des points de restauration système. C'est le filet de sécurité
-/// principal : avant toute optimisation profonde, on peut revenir en arrière
-/// via la restauration système Windows.
+/// Creates Windows System Restore points. This is the main safety net: before
+/// any deep optimization, the user can roll back through System Restore.
 /// </summary>
 public sealed class RestorePointService
 {
     /// <summary>
-    /// Crée un point de restauration. Nécessite que la protection système soit
-    /// activée sur le lecteur système ; sinon Windows refuse l'opération.
+    /// Creates a restore point. Requires System Protection to be enabled on the
+    /// system drive; otherwise Windows rejects the operation.
     /// </summary>
     public OptimizationResult Create(string description)
     {
@@ -32,23 +31,23 @@ public sealed class RestorePointService
             uint code = Convert.ToUInt32(outParams?["ReturnValue"] ?? 1u);
 
             return code == 0
-                ? OptimizationResult.Ok("Point de restauration créé.")
+                ? OptimizationResult.Ok("Restore point created.")
                 : OptimizationResult.Fail(
-                    $"Création refusée (code {code}). La protection système est-elle activée ?");
+                    $"Creation refused (code {code}). Is System Protection enabled?");
         }
         catch (Exception ex)
         {
-            return OptimizationResult.Fail($"Impossible de créer le point de restauration : {ex.Message}");
+            return OptimizationResult.Fail($"Could not create the restore point: {ex.Message}");
         }
     }
 
-    /// <summary>Tente d'activer la protection système sur le lecteur C:.</summary>
+    /// <summary>Attempts to enable System Protection on drive C:.</summary>
     public OptimizationResult EnableSystemProtection()
     {
         var result = ProcessRunner.Run("powershell",
             "-NoProfile -Command \"Enable-ComputerRestore -Drive 'C:\\'\"");
         return result.Success
-            ? OptimizationResult.Ok("Protection système activée sur C:.")
-            : OptimizationResult.Fail($"Échec : {result.StdErr}");
+            ? OptimizationResult.Ok("System Protection enabled on C:.")
+            : OptimizationResult.Fail($"Failed: {result.StdErr}");
     }
 }

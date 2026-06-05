@@ -12,7 +12,7 @@ public partial class SurgeViewModel : ObservableObject
 
     [ObservableProperty] private bool _isSurgeActive;
     [ObservableProperty] private string _statusText = "";
-    [ObservableProperty] private string _buttonText = "Activer Surge";
+    [ObservableProperty] private string _buttonText = "Activate Surge";
 
     public ObservableCollection<string> Log { get; } = new();
 
@@ -26,9 +26,9 @@ public partial class SurgeViewModel : ObservableObject
     {
         IsSurgeActive = _surge.IsActive;
         StatusText = IsSurgeActive
-            ? "Surge ACTIF — les optimisations sont appliquées."
-            : "Surge inactif. Clique pour propulser ton PC en mode performance.";
-        ButtonText = IsSurgeActive ? "Désactiver et restaurer" : "Activer Surge";
+            ? "Surge is ACTIVE — optimizations are applied."
+            : "Surge is idle. Hit the button to push your PC into performance mode.";
+        ButtonText = IsSurgeActive ? "Deactivate & restore" : "Activate Surge";
     }
 
     [RelayCommand]

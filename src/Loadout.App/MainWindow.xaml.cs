@@ -10,10 +10,10 @@ public partial class MainWindow : FluentWindow
     {
         InitializeComponent();
 
-        // On navigue APRÈS que l'événement Loaded soit entièrement propagé
-        // (priorité Background), afin que la barre de titre WPF-UI ait fini de
-        // s'initialiser. Sinon une exception pendant la navigation casserait la
-        // propagation de Loaded et laisserait les boutons de fenêtre inutilisables.
+        // Navigate AFTER the Loaded event has fully propagated (Background
+        // priority), so the WPF-UI title bar finishes initializing. Otherwise an
+        // exception during navigation would break the Loaded broadcast and leave
+        // the window caption buttons unusable.
         Loaded += (_, _) => Dispatcher.BeginInvoke(
             DispatcherPriority.Background,
             () => RootNavigation.Navigate(typeof(DashboardPage)));

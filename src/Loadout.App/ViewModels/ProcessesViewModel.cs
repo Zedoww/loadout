@@ -6,7 +6,7 @@ using Loadout.Core.Optimization;
 
 namespace Loadout.App.ViewModels;
 
-/// <summary>Une ligne de la liste des processus, avec ses actions suspend/resume.</summary>
+/// <summary>A single process row, with its suspend/resume actions.</summary>
 public partial class ProcessRowViewModel : ObservableObject
 {
     private readonly ProcessService _process;
@@ -16,7 +16,7 @@ public partial class ProcessRowViewModel : ObservableObject
     public long Bytes { get; }
 
     public string MemoryText => BytesToReadableConverter.Format(Bytes);
-    public string CountText => Count > 1 ? $"{Count} processus" : "1 processus";
+    public string CountText => Count > 1 ? $"{Count} processes" : "1 process";
 
     [ObservableProperty] private string _status = "";
 
@@ -40,7 +40,7 @@ public partial class ProcessesViewModel : ObservableObject
     private readonly ProcessService _process;
     private readonly MemoryCleaner _memory;
 
-    [ObservableProperty] private string _summary = "Liste des applications les plus gourmandes en mémoire.";
+    [ObservableProperty] private string _summary = "Top applications by memory usage.";
     [ObservableProperty] private bool _isBusy;
 
     public ObservableCollection<ProcessRowViewModel> Processes { get; } = new();
@@ -59,7 +59,7 @@ public partial class ProcessesViewModel : ObservableObject
         foreach (var g in _process.ListTopByMemory())
             Processes.Add(new ProcessRowViewModel(g, _process));
 
-        Summary = $"{Processes.Count} applications affichées (les processus système sont masqués).";
+        Summary = $"{Processes.Count} applications shown (system processes are hidden).";
     }
 
     [RelayCommand]
@@ -70,7 +70,7 @@ public partial class ProcessesViewModel : ObservableObject
         {
             var result = await Task.Run(() => _memory.Clean());
             Summary = result.Success
-                ? $"Mémoire libérée — {BytesToReadableConverter.Format(result.BytesFreed)} récupérés."
+                ? $"Memory freed — {BytesToReadableConverter.Format(result.BytesFreed)} reclaimed."
                 : result.Message;
             Refresh();
         }

@@ -12,11 +12,11 @@ public partial class DashboardViewModel : ObservableObject, IDisposable
     private readonly Timer _timer;
     private volatile bool _reading;
 
-    [ObservableProperty] private string _cpuName = "Processeur";
+    [ObservableProperty] private string _cpuName = "Processor";
     [ObservableProperty] private float? _cpuLoad;
     [ObservableProperty] private float? _cpuTemperature;
 
-    [ObservableProperty] private string _gpuName = "Carte graphique";
+    [ObservableProperty] private string _gpuName = "Graphics card";
     [ObservableProperty] private float? _gpuLoad;
     [ObservableProperty] private float? _gpuTemperature;
 
@@ -29,21 +29,21 @@ public partial class DashboardViewModel : ObservableObject, IDisposable
         _timer = new Timer(1000) { AutoReset = true };
         _timer.Elapsed += OnTick;
         _timer.Start();
-        // La première lecture est lancée par le timer sur un thread d'arrière-plan :
-        // l'ouverture de LibreHardwareMonitor prend quelques secondes et ne doit
-        // jamais bloquer le thread d'interface.
+        // The first read is triggered by the timer on a background thread:
+        // opening LibreHardwareMonitor takes a few seconds and must never block
+        // the UI thread.
     }
 
     private void OnTick(object? sender, ElapsedEventArgs? e)
     {
-        if (_reading) return;          // évite l'empilement si une lecture est lente
+        if (_reading) return;          // avoid stacking up if a read is slow
         _reading = true;
         try
         {
             SystemMetrics m = _monitor.Read();
             Application.Current?.Dispatcher.Invoke(() => Apply(m));
         }
-        catch { /* on retentera au prochain tick */ }
+        catch { /* will retry on the next tick */ }
         finally { _reading = false; }
     }
 

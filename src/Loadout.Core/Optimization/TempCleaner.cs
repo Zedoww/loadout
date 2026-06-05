@@ -1,9 +1,8 @@
 namespace Loadout.Core.Optimization;
 
 /// <summary>
-/// Nettoie les dossiers temporaires. Ne touche qu'aux emplacements temporaires
-/// connus et ignore tout fichier verrouillé (utilisé par un programme actif),
-/// ce qui rend l'opération sûre.
+/// Cleans temporary folders. It only touches known temp locations and skips any
+/// locked file (in use by a running program), which keeps the operation safe.
 /// </summary>
 public sealed class TempCleaner
 {
@@ -11,7 +10,7 @@ public sealed class TempCleaner
 
     public TempCleaner() { }
 
-    /// <summary>Constructeur de test : cible des dossiers spécifiques.</summary>
+    /// <summary>Test constructor: targets specific directories.</summary>
     public TempCleaner(IReadOnlyList<string> directories) => _overrideDirectories = directories;
 
     private IEnumerable<string> TempDirectories()
@@ -22,14 +21,14 @@ public sealed class TempCleaner
             yield break;
         }
 
-        yield return Path.GetTempPath();                                    // %TEMP% utilisateur
+        yield return Path.GetTempPath();                                    // user %TEMP%
         yield return Environment.ExpandEnvironmentVariables(@"%SystemRoot%\Temp");
         string local = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         if (!string.IsNullOrEmpty(local))
             yield return Path.Combine(local, "Temp");
     }
 
-    /// <summary>Calcule l'espace récupérable (octets) sans rien supprimer.</summary>
+    /// <summary>Computes the reclaimable space (bytes) without deleting anything.</summary>
     public long Scan()
     {
         long total = 0;
@@ -45,7 +44,7 @@ public sealed class TempCleaner
         return total;
     }
 
-    /// <summary>Supprime les fichiers temporaires accessibles. Renvoie l'espace libéré.</summary>
+    /// <summary>Deletes accessible temporary files. Returns the freed space.</summary>
     public OptimizationResult Clean()
     {
         long freed = 0;
@@ -67,11 +66,11 @@ public sealed class TempCleaner
                 }
                 catch
                 {
-                    skipped++; // verrouillé ou protégé : on laisse tel quel.
+                    skipped++; // locked or protected: leave it as is.
                 }
             }
 
-            // Supprime les sous-dossiers désormais vides.
+            // Remove now-empty sub-directories.
             foreach (var sub in SafeGetDirectories(dir))
             {
                 try
@@ -84,7 +83,7 @@ public sealed class TempCleaner
         }
 
         return OptimizationResult.Ok(
-            $"{files} fichiers supprimés ({skipped} ignorés car en cours d'utilisation).", freed);
+            $"{files} files deleted ({skipped} skipped, in use).", freed);
     }
 
     private static IEnumerable<string> EnumerateFilesSafe(string root)

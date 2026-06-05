@@ -4,9 +4,8 @@ using System.Runtime.InteropServices;
 namespace Loadout.Core.Optimization;
 
 /// <summary>
-/// Libère la mémoire vive en réduisant le « working set » des processus.
-/// Opération sans risque : Windows réalloue la mémoire aux processus selon
-/// leurs besoins. Rien de permanent n'est modifié.
+/// Frees RAM by trimming each process's working set. This is risk-free: Windows
+/// re-allocates memory to processes as they need it. Nothing permanent changes.
 /// </summary>
 public sealed class MemoryCleaner
 {
@@ -37,7 +36,7 @@ public sealed class MemoryCleaner
         return GlobalMemoryStatusEx(ref status) ? status.ullAvailPhys : 0;
     }
 
-    /// <summary>Vide le working set de tous les processus accessibles.</summary>
+    /// <summary>Empties the working set of every accessible process.</summary>
     public OptimizationResult Clean()
     {
         ulong before = GetAvailablePhysicalBytes();
@@ -52,7 +51,7 @@ public sealed class MemoryCleaner
             }
             catch
             {
-                // Process système protégé ou déjà terminé : on ignore.
+                // Protected system process or already exited: ignore.
             }
             finally
             {
@@ -65,6 +64,6 @@ public sealed class MemoryCleaner
         if (freed < 0) freed = 0;
 
         return OptimizationResult.Ok(
-            $"Mémoire libérée sur {trimmed} processus.", freed);
+            $"Memory trimmed on {trimmed} processes.", freed);
     }
 }

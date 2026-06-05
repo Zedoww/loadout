@@ -9,17 +9,17 @@ using Loadout.Core.Optimization;
 namespace Loadout.App.Services;
 
 /// <summary>
-/// Composition root : enregistre tous les services, ViewModels et la fenêtre
-/// principale dans le conteneur d'injection de dépendances.
+/// Composition root: registers every service, ViewModel and the main window in
+/// the dependency-injection container.
 /// </summary>
 public static class ServiceRegistration
 {
     public static IServiceCollection AddLoadoutServices(this IServiceCollection services)
     {
-        // Journalisation (Serilog branché derrière l'abstraction Microsoft.Extensions.Logging).
+        // Logging (Serilog plugged behind the Microsoft.Extensions.Logging abstraction).
         services.AddLogging(builder => builder.AddSerilog(dispose: true));
 
-        // Services système (Loadout.Core) — sans état partagé lourd, donc singletons.
+        // System services (Loadout.Core) — no heavy shared state, so singletons.
         services.AddSingleton<HardwareMonitor>();
         services.AddSingleton<PowerPlanService>();
         services.AddSingleton<MemoryCleaner>();
@@ -29,7 +29,7 @@ public static class ServiceRegistration
         services.AddSingleton<TweakService>();
         services.AddSingleton<SurgeService>();
 
-        // ViewModels.
+        // View models.
         services.AddTransient<DashboardViewModel>();
         services.AddTransient<SurgeViewModel>();
         services.AddTransient<ProcessesViewModel>();
@@ -37,7 +37,7 @@ public static class ServiceRegistration
         services.AddTransient<CleanupViewModel>();
         services.AddTransient<SettingsViewModel>();
 
-        // Fenêtre principale.
+        // Main window.
         services.AddSingleton<MainWindow>();
 
         return services;
