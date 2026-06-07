@@ -15,7 +15,9 @@
             <conv:BytesToReadableConverter x:Key="BytesToReadable" />
             <conv:NullableFloatConverter x:Key="NullableFloat" />
             <conv:BoolToVisibilityConverter x:Key="BoolToVisibility" />
+            <conv:BoolToVisibilityConverter x:Key="BoolToVis" />
             <conv:InverseBoolConverter x:Key="InverseBool" />
+            <conv:InverseBoolToVisibilityConverter x:Key="InverseBoolToVis" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

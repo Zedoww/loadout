@@ -25,6 +25,10 @@ public static class ServiceRegistration
         services.AddSingleton<PowerPlanService>();
         services.AddSingleton<MemoryCleaner>();
         services.AddSingleton<RestorePointService>();
+        services.AddSingleton<SystemInfoService>();
+
+        // UI services.
+        services.AddSingleton<IConfirmationService, ConfirmationService>();
 
         // Cleanup categories + orchestrator.
         services.AddSingleton<ICleanupTarget, WindowsTempTarget>();
@@ -42,6 +46,7 @@ public static class ServiceRegistration
         services.AddTransient<TweaksViewModel>();
         services.AddTransient<CleanupViewModel>();
         services.AddTransient<SettingsViewModel>();
+        services.AddTransient<SystemInfoViewModel>();
 
         // Main window.
         services.AddSingleton<MainWindow>();
