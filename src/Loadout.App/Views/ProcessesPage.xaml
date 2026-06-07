@@ -57,12 +57,18 @@
                                         </StackPanel>
                                     </StackPanel>
 
-                                    <ui:Button Grid.Column="1" Content="Suspend"
-                                               Icon="{ui:SymbolIcon Pause24}"
-                                               Command="{Binding SuspendCommand}" Margin="0,0,8,0" />
-                                    <ui:Button Grid.Column="2" Content="Resume"
-                                               Icon="{ui:SymbolIcon Play24}"
-                                               Command="{Binding ResumeCommand}" />
+                                    <!-- Paused badge, shown only while suspended -->
+                                    <Border Grid.Column="1" Style="{StaticResource Pill}" Background="#33F6B73C"
+                                            Margin="0,0,10,0"
+                                            Visibility="{Binding IsSuspended, Converter={StaticResource BoolToVisibility}}">
+                                        <TextBlock Text="Paused" FontSize="11" FontWeight="SemiBold"
+                                                   Foreground="{StaticResource Warning}" />
+                                    </Border>
+
+                                    <!-- One stateful toggle: Suspend ⇄ Resume -->
+                                    <ui:Button Grid.Column="2" MinWidth="104"
+                                               Content="{Binding ButtonText}"
+                                               Command="{Binding ToggleCommand}" />
                                 </Grid>
                             </Border>
                         </DataTemplate>

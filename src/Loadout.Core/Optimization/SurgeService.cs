@@ -40,17 +40,23 @@ public sealed class SurgeService
 
     public SurgeService(PowerPlanService power, MemoryCleaner memory,
         ProcessService process, ILogger<SurgeService> logger)
+        : this(power, memory, process, logger, DefaultDataDirectory()) { }
+
+    /// <summary>Test constructor: persists the Surge snapshot in a custom directory.</summary>
+    internal SurgeService(PowerPlanService power, MemoryCleaner memory,
+        ProcessService process, ILogger<SurgeService> logger, string dataDirectory)
     {
         _power = power;
         _memory = memory;
         _process = process;
         _logger = logger;
 
-        string dir = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Loadout");
-        Directory.CreateDirectory(dir);
-        _statePath = Path.Combine(dir, "surge-state.json");
+        Directory.CreateDirectory(dataDirectory);
+        _statePath = Path.Combine(dataDirectory, "surge-state.json");
     }
+
+    private static string DefaultDataDirectory() => Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Loadout");
 
     public bool IsActive => File.Exists(_statePath);
 

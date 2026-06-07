@@ -38,15 +38,20 @@ public sealed class TweakService
         @"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile";
 
     public TweakService(ILogger<TweakService> logger)
+        : this(logger, DefaultDataDirectory()) { }
+
+    /// <summary>Test constructor: stores the backup in a custom directory.</summary>
+    internal TweakService(ILogger<TweakService> logger, string dataDirectory)
     {
         _logger = logger;
 
-        string dir = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Loadout");
-        Directory.CreateDirectory(dir);
-        _backupPath = Path.Combine(dir, "tweaks-backup.json");
+        Directory.CreateDirectory(dataDirectory);
+        _backupPath = Path.Combine(dataDirectory, "tweaks-backup.json");
         _backups = LoadBackups();
     }
+
+    private static string DefaultDataDirectory() => Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Loadout");
 
     /// <summary>The catalog of tweaks, all documented and reversible.</summary>
     public IReadOnlyList<TweakDefinition> Definitions { get; } = new List<TweakDefinition>

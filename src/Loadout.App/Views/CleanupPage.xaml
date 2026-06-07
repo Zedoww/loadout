@@ -14,10 +14,20 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <StackPanel Grid.Row="0" Margin="0,0,0,16">
                 <TextBlock Text="Cleanup" Style="{StaticResource Type.PageTitle}" />
                 <TextBlock Text="Preview each category, then delete only what you pick. Files in use are safely skipped."
                            Style="{StaticResource Type.PageSubtitle}" Margin="0,4,0,0" />
+
+                <!-- Select all + live total -->
+                <DockPanel Margin="0,14,0,0">
+                    <CheckBox DockPanel.Dock="Left" Content="Select all"
+                              IsChecked="{Binding IsAllSelected}" />
+                    <TextBlock DockPanel.Dock="Right" HorizontalAlignment="Right"
+                               Text="{Binding SelectedTotalText}" VerticalAlignment="Center"
+                               FontFamily="{StaticResource Font.Mono}" FontSize="12.5"
+                               Foreground="{StaticResource Text.Secondary}" />
+                </DockPanel>
             </StackPanel>
 
             <!-- Category list -->

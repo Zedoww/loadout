@@ -19,6 +19,12 @@ public partial class ProcessRowViewModel : ObservableObject
     public string CountText => Count > 1 ? $"{Count} processes" : "1 process";
 
     [ObservableProperty] private string _status = "";
+    [ObservableProperty] private bool _isSuspended;
+
+    /// <summary>Label of the single toggle button, driven by the current state.</summary>
+    public string ButtonText => IsSuspended ? "Resume" : "Suspend";
+
+    partial void OnIsSuspendedChanged(bool value) => OnPropertyChanged(nameof(ButtonText));
 
     public ProcessRowViewModel(ProcessGroup group, ProcessService process)
     {
@@ -28,11 +34,14 @@ public partial class ProcessRowViewModel : ObservableObject
         Bytes = group.WorkingSetBytes;
     }
 
+    /// <summary>One button that suspends or resumes depending on the current state.</summary>
     [RelayCommand]
-    private void Suspend() => Status = _process.Suspend(Name).Message;
-
-    [RelayCommand]
-    private void Resume() => Status = _process.Resume(Name).Message;
+    private void Toggle()
+    {
+        var result = IsSuspended ? _process.Resume(Name) : _process.Suspend(Name);
+        Status = result.Message;
+        if (result.Success) IsSuspended = !IsSuspended;
+    }
 }
 
 public partial class ProcessesViewModel : ObservableObject
