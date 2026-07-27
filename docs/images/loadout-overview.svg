@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
+  <title id="title">Loadout product overview</title>
+  <desc id="description">Loadout connects monitoring, reversible optimization, cleanup, and restore workflows.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#090d1a"/>
+      <stop offset="1" stop-color="#16152d"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6366f1"/>
+      <stop offset="1" stop-color="#d946ef"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" rx="36" fill="url(#background)"/>
+  <circle cx="1080" cy="90" r="170" fill="#6366f1" opacity="0.08"/>
+  <circle cx="1060" cy="560" r="230" fill="#d946ef" opacity="0.06"/>
+
+  <text x="72" y="104" fill="#f8fafc" font-family="Segoe UI, sans-serif" font-size="58" font-weight="700">LOADOUT</text>
+  <rect x="72" y="126" width="260" height="8" rx="4" fill="url(#accent)"/>
+  <text x="72" y="178" fill="#a5b4fc" font-family="Segoe UI, sans-serif" font-size="25">Safe. Reversible. Auditable.</text>
+
+  <g font-family="Segoe UI, sans-serif">
+    <rect x="72" y="236" width="310" height="230" rx="24" fill="#151b2f" stroke="#334155"/>
+    <text x="104" y="286" fill="#f8fafc" font-size="27" font-weight="600">MONITOR</text>
+    <text x="104" y="332" fill="#94a3b8" font-size="21">CPU, GPU, memory</text>
+    <text x="104" y="367" fill="#94a3b8" font-size="21">temperature, storage</text>
+    <path d="M105 419 L155 388 L205 407 L255 344 L342 375" fill="none" stroke="#818cf8" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <rect x="445" y="236" width="310" height="230" rx="24" fill="#151b2f" stroke="#334155"/>
+    <text x="477" y="286" fill="#f8fafc" font-size="27" font-weight="600">OPTIMIZE</text>
+    <text x="477" y="332" fill="#94a3b8" font-size="21">Power, memory, processes</text>
+    <circle cx="600" cy="402" r="44" fill="none" stroke="#c084fc" stroke-width="10"/>
+    <path d="M600 362 L582 402 H604 L590 440 L625 392 H603 L620 362 Z" fill="#f8fafc"/>
+
+    <rect x="818" y="236" width="310" height="230" rx="24" fill="#151b2f" stroke="#334155"/>
+    <text x="850" y="286" fill="#f8fafc" font-size="27" font-weight="600">RESTORE</text>
+    <text x="850" y="332" fill="#94a3b8" font-size="21">Snapshots and backups</text>
+    <path d="M1005 430 A58 58 0 1 1 1018 358" fill="none" stroke="#22c55e" stroke-width="10" stroke-linecap="round"/>
+    <path d="M1008 330 L1025 365 L986 365 Z" fill="#22c55e"/>
+  </g>
+
+  <text x="72" y="548" fill="#cbd5e1" font-family="Segoe UI, sans-serif" font-size="23">Open-source Windows performance engineering in .NET 9 and WPF</text>
+</svg>
