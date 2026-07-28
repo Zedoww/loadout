@@ -1,0 +1,55 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restore
+        run: dotnet restore Loadout.sln
+
+      - name: Test
+        run: dotnet test Loadout.sln --configuration Release --no-restore
+
+      - name: Publish Windows x64
+        run: >-
+          dotnet publish src/Loadout.App/Loadout.App.csproj
+          --configuration Release
+          --runtime win-x64
+          --self-contained false
+          --output artifacts/loadout-win-x64
+
+      - name: Package and checksum
+        shell: pwsh
+        run: |
+          Compress-Archive -Path artifacts/loadout-win-x64/* -DestinationPath artifacts/loadout-win-x64.zip
+          $hash = (Get-FileHash artifacts/loadout-win-x64.zip -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$hash  loadout-win-x64.zip" | Set-Content artifacts/loadout-win-x64.zip.sha256
+
+      - name: Create GitHub release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh release create $env:GITHUB_REF_NAME
+          artifacts/loadout-win-x64.zip
+          artifacts/loadout-win-x64.zip.sha256
+          --generate-notes
+          --verify-tag
