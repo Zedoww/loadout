@@ -4,6 +4,15 @@ on:
   push:
     tags:
       - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag to build and publish
+        required: true
+        type: string
+
+env:
+  RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
 
 permissions:
   contents: write
@@ -16,6 +25,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          ref: ${{ env.RELEASE_TAG }}
 
       - name: Setup .NET 9
         uses: actions/setup-dotnet@v6
@@ -43,13 +54,20 @@ jobs:
           $hash = (Get-FileHash artifacts/loadout-win-x64.zip -Algorithm SHA256).Hash.ToLowerInvariant()
           "$hash  loadout-win-x64.zip" | Set-Content artifacts/loadout-win-x64.zip.sha256
 
-      - name: Create GitHub release
+      - name: Publish GitHub release assets
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
-        run: >-
-          gh release create $env:GITHUB_REF_NAME
-          artifacts/loadout-win-x64.zip
-          artifacts/loadout-win-x64.zip.sha256
-          --generate-notes
-          --verify-tag
+        run: |
+          $assets = @(
+            "artifacts/loadout-win-x64.zip",
+            "artifacts/loadout-win-x64.zip.sha256"
+          )
+
+          gh release view $env:RELEASE_TAG *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $env:RELEASE_TAG @assets --clobber
+          }
+          else {
+            gh release create $env:RELEASE_TAG @assets --generate-notes --verify-tag
+          }
